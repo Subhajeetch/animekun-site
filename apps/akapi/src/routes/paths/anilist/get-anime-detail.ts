@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
-import {anilist} from "@repo/anilist";
+import { getAnime } from "@/utils/get-anime-detail.js";
+import { searchAnimes } from "@/utils/search-animes.js";
 import type { SearchAnimesParams } from "@repo/anilist";
 
 const getAnimeDetail = new Hono<{}>();
@@ -22,7 +23,7 @@ getAnimeDetail.get("/search/animes", async (c) => {
     };
 
     try {
-        const animes = await anilist.searchAnimes(searchParams);
+        const animes = await searchAnimes(searchParams);
         return c.json(animes);
     } catch (error) {
         console.error("Error searching anime:", error);
@@ -33,9 +34,6 @@ getAnimeDetail.get("/search/animes", async (c) => {
 //search products by keyword
 getAnimeDetail.get("/anime/:id", async (c) => {
     const { id } = c.req.param();
-
-    const getAnime = anilist.getAnime;
-
     try {
         const anime = await getAnime(Number(id));
         return c.json(anime);

@@ -1,18 +1,45 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import {
-  getAnime,
-  extractIdFromSlug,
-  formatFuzzyDate,
-  AniListError,
-  MediaFormat,
-  MediaStatus,
-  RelationType,
-} from "@/anilist/get-anime-detail";
-import type { AnimeDetails, RelatedAnime, AnimeCharacter } from "@/anilist/get-anime-detail";
 import AnimeSequence from "./AnimeSequence";
 import AnimeCast from "./AnimeCast";
 import AnimeExternalLinks from "./AnimeExternalLinks";
+import CustomImage from "@/components/custom-image";
+
+import axios from "axios";
+
+import { anilist, AnimeDetails, MediaStatus, MediaFormat, RelationType, RelatedAnime, AniListError } from "@repo/anilist";
+
+const { extractIdFromSlug, formatFuzzyDate } = anilist;
+
+
+// ─── Data Fetching ───────────────────────────────────────────────────────────
+
+async function getAnime(id: number): Promise<AnimeDetails> {
+  try {
+    const { data } = await axios.get<AnimeDetails>(
+      `${process.env.API_URL ? process.env.API_URL : "http://localhost:3002"}/api/anilist/anime/${id}`
+    );
+
+    return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const status = err.response?.status ?? 500;
+
+      const message =
+        err.response?.data?.message ??
+        err.message ??
+        "Failed to fetch anime";
+
+      throw new AniListError(message, {
+        status,
+      });
+    }
+
+    throw new AniListError("Unexpected error fetching anime", {
+      status: 500,
+    });
+  }
+}
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
@@ -20,13 +47,13 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ animeId: string }>;
- }): Promise<Metadata> {
+}): Promise<Metadata> {
   const { animeId } = await params;
   const id = extractIdFromSlug(animeId);
   if (!id) return { title: "Anime Not Found" };
 
   try {
-    const anime = await getAnime(id);
+    const anime = await getAnime(id); // ← was commented out
     const title = anime.title.english ?? anime.title.romaji ?? "Unknown Anime";
     const description = (anime.description ?? "")
       .replace(/<[^>]*>/g, "")
@@ -49,7 +76,6 @@ export async function generateMetadata({
     return { title: "Anime Not Found" };
   }
 }
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatStatus(status: MediaStatus | null): string {
@@ -264,9 +290,11 @@ export default async function AnimePage({
       <div className="relative w-full h-56 md:h-80 lg:h-96 overflow-hidden">
         {anime.bannerImage ? (
           <>
-            <img
+            <CustomImage
               src={anime.bannerImage}
-              alt=""
+              width={780}
+              height={320}
+              alt={`${anime.title.english ?? anime.title.romaji ?? "Anime Banner"} banner`}
               className="absolute inset-0 w-full h-full object-cover object-top"
               aria-hidden="true"
             />
@@ -305,13 +333,15 @@ export default async function AnimePage({
                 boxShadow: `0 0 40px ${anime.coverImage.color ?? "#3f3f46"}44`,
               }}
             >
-              <img
+              <CustomImage
                 src={
                   anime.coverImage.extraLarge ??
                   anime.coverImage.large ??
                   anime.coverImage.medium ??
                   ""
                 }
+                width={180}
+                height={284}
                 alt={displayTitle}
                 className="w-full h-full object-cover"
               />

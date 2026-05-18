@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { AnimeCharacter } from "@/anilist/get-anime-detail";
+import type { AnimeCharacter } from "@repo/anilist";
+import CustomImage from "@/components/custom-image";
 
 interface Props {
   characters: AnimeCharacter[];
@@ -32,9 +33,11 @@ export default function AnimeCast({ characters }: Props) {
               {/* Character image */}
               <div className="aspect-[3/4] overflow-hidden bg-zinc-800 relative">
                 {img ? (
-                  <img
+                  <CustomImage
                     src={img}
                     alt={name}
+                    width={120}
+                    height={160}
                     className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
@@ -64,9 +67,11 @@ export default function AnimeCast({ characters }: Props) {
                 {vaName && (
                   <div className="flex items-center gap-1.5">
                     {vaImg && (
-                      <img
+                      <CustomImage
                         src={vaImg}
                         alt={vaName}
+                        width={16}
+                        height={16}
                         className="w-4 h-4 object-cover flex-shrink-0"
                       />
                     )}

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import type { RelatedAnime } from "@/anilist/get-anime-detail";
-import { MediaFormat, RelationType } from "@/anilist/get-anime-detail";
+import {MediaFormat, RelatedAnime, RelationType} from "@repo/anilist";
+import CustomImage from "@/components/custom-image";
+
 
 // ─── Helpers ──────────────────────────────────────────────────
 
@@ -82,7 +83,9 @@ export default function AnimeSequence({ relations, currentId }: Props) {
             {/* Cover thumbnail */}
             <div className="w-12 h-16 shrink-0 overflow-hidden border border-zinc-700 bg-zinc-800">
               {rel.coverImage.medium || rel.coverImage.large ? (
-                <img
+                <CustomImage
+                width={40}
+                height={64}
                   src={rel.coverImage.medium ?? rel.coverImage.large ?? ""}
                   alt={title}
                   className="w-full h-full object-cover"

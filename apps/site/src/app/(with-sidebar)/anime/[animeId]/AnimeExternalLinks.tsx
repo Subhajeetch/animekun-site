@@ -1,6 +1,8 @@
 "use client";
 
-import type { AnimeExternalLink } from "@/anilist/get-anime-detail";
+import CustomImage from "@/components/custom-image";
+import { AnimeExternalLink } from "@repo/anilist";
+
 
 interface Props {
   links: AnimeExternalLink[];
@@ -74,7 +76,9 @@ function ExternalLinkButton({
     >
       {/* Favicon / icon */}
       {link.icon ? (
-        <img
+        <CustomImage
+          width={14}
+          height={14}
           src={link.icon}
           alt=""
           className="w-3.5 h-3.5 object-contain"

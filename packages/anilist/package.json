@@ -1,0 +1,19 @@
+{
+  "name": "@repo/anilist",
+  "version": "1.0.0",
+  "description": "",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "5.9.2"
+  }
+}

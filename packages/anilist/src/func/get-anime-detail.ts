@@ -4,256 +4,31 @@
 //  API Docs    : https://anilist.gitbook.io/anilist-apiv2-docs
 // ─────────────────────────────────────────────────────────────
 
-import config from "@/mine.config";
+import config from "../mine.config";
+
+import type {
+  AnimeCharacter,
+  AnimeCoverImage,
+  AnimeDetails,
+  AnimeRanking,
+  AnimeStreamingEpisode,
+  AnimeTag,
+  AnimeTitle,
+  FuzzyDate,
+  MediaFormat,
+  MediaSeason,
+  MediaStatus,
+  RelationType,
+  RelatedAnime,
+  AnimeTrailer,
+  AnimeStudio,
+  AnimeExternalLink,
+} from "../types";
+
+import { AniListError } from "../classes";
 
 const ANILIST_ENDPOINT = config.ANILIST.URI;
 
-// ─── Re-exported enums (kept in sync with search-animes.ts) ──
-
-export enum MediaFormat {
-  TV = "TV",
-  TV_SHORT = "TV_SHORT",
-  MOVIE = "MOVIE",
-  SPECIAL = "SPECIAL",
-  OVA = "OVA",
-  ONA = "ONA",
-  MUSIC = "MUSIC",
-}
-
-export enum MediaStatus {
-  FINISHED = "FINISHED",
-  RELEASING = "RELEASING",
-  NOT_YET_RELEASED = "NOT_YET_RELEASED",
-  CANCELLED = "CANCELLED",
-  HIATUS = "HIATUS",
-}
-
-export enum MediaSeason {
-  WINTER = "WINTER",
-  SPRING = "SPRING",
-  SUMMER = "SUMMER",
-  FALL = "FALL",
-}
-
-export enum RelationType {
-  ADAPTATION = "ADAPTATION",
-  PREQUEL = "PREQUEL",
-  SEQUEL = "SEQUEL",
-  PARENT = "PARENT",
-  SIDE_STORY = "SIDE_STORY",
-  CHARACTER = "CHARACTER",
-  SUMMARY = "SUMMARY",
-  ALTERNATIVE = "ALTERNATIVE",
-  SPIN_OFF = "SPIN_OFF",
-  OTHER = "OTHER",
-  SOURCE = "SOURCE",
-  COMPILATION = "COMPILATION",
-  CONTAINS = "CONTAINS",
-}
-
-// ─── Response Types ───────────────────────────────────────────
-
-export interface AnimeTitle {
-  romaji: string | null;
-  english: string | null;
-  native: string | null;
-  userPreferred: string | null;
-}
-
-export interface AnimeCoverImage {
-  extraLarge: string | null;
-  large: string | null;
-  medium: string | null;
-  color: string | null;
-}
-
-export interface FuzzyDate {
-  year: number | null;
-  month: number | null;
-  day: number | null;
-}
-
-export interface AnimeStudio {
-  id: number;
-  name: string;
-  isAnimationStudio: boolean;
-  siteUrl: string | null;
-}
-
-export interface AnimeTrailer {
-  id: string | null;
-  site: string | null;
-  thumbnail: string | null;
-}
-
-export interface AnimeTag {
-  name: string;
-  description: string | null;
-  rank: number;
-  isMediaSpoiler: boolean;
-  isGeneralSpoiler: boolean;
-}
-
-export interface AnimeCharacterName {
-  full: string | null;
-  native: string | null;
-}
-
-export interface AnimeCharacterImage {
-  large: string | null;
-  medium: string | null;
-}
-
-export interface AnimeCharacter {
-  id: number;
-  name: AnimeCharacterName;
-  image: AnimeCharacterImage;
-  description: string | null;
-  gender: string | null;
-  siteUrl: string | null;
-  /** The voice actor for this character (Japanese VA by default) */
-  voiceActor: {
-    id: number;
-    name: { full: string | null; native: string | null };
-    image: { large: string | null };
-    languageV2: string | null;
-  } | null;
-  /** Role in the story: MAIN, SUPPORTING, BACKGROUND */
-  role: "MAIN" | "SUPPORTING" | "BACKGROUND";
-}
-
-export interface AnimeExternalLink {
-  id: number;
-  url: string;
-  site: string;
-  type: string | null;
-  icon: string | null;
-  color: string | null;
-}
-
-export interface AnimeStreamingEpisode {
-  title: string | null;
-  thumbnail: string | null;
-  url: string | null;
-  site: string | null;
-}
-
-export interface RelatedAnime {
-  id: number;
-  title: AnimeTitle;
-  coverImage: AnimeCoverImage;
-  format: MediaFormat | null;
-  status: MediaStatus | null;
-  episodes: number | null;
-  season: MediaSeason | null;
-  seasonYear: number | null;
-  /** How this relates to the current anime */
-  relationType: RelationType;
-}
-
-export interface AnimeReview {
-  id: number;
-  summary: string | null;
-  score: number | null;
-  rating: number | null;
-  ratingAmount: number | null;
-  user: {
-    id: number;
-    name: string;
-    avatar: { large: string | null } | null;
-  };
-}
-
-export interface AnimeRanking {
-  rank: number;
-  type: string;
-  format: string;
-  year: number | null;
-  season: string | null;
-  allTime: boolean;
-  context: string;
-}
-
-export interface AnimeDetails {
-  id: number;
-  idMal: number | null;
-
-  // Titles & Identity
-  title: AnimeTitle;
-  synonyms: string[];
-  description: string | null;
-
-  // Visuals
-  coverImage: AnimeCoverImage;
-  bannerImage: string | null;
-  trailer: AnimeTrailer | null;
-
-  // Classification
-  format: MediaFormat | null;
-  status: MediaStatus | null;
-  season: MediaSeason | null;
-  seasonYear: number | null;
-  source: string | null;
-  countryOfOrigin: string | null;
-  isAdult: boolean;
-
-  // Stats
-  episodes: number | null;
-  duration: number | null;
-  chapters: number | null;
-  volumes: number | null;
-
-  // Dates
-  startDate: FuzzyDate;
-  endDate: FuzzyDate;
-
-  // Scores
-  averageScore: number | null;     // 0–100
-  meanScore: number | null;        // 0–100
-  popularity: number | null;
-  favourites: number | null;
-  trending: number | null;
-
-  // Rankings
-  rankings: AnimeRanking[];
-
-  // Taxonomy
-  genres: string[];
-  tags: AnimeTag[];
-
-  // Relations
-  relations: RelatedAnime[];
-  studios: AnimeStudio[];
-  producers: AnimeStudio[];
-
-  // People & Characters
-  characters: AnimeCharacter[];
-
-  // Links
-  externalLinks: AnimeExternalLink[];
-  streamingEpisodes: AnimeStreamingEpisode[];
-  siteUrl: string | null;
-}
-
-// ─── Custom Error ─────────────────────────────────────────────
-
-export class AniListError extends Error {
-  public readonly status?: number;
-  public readonly errors?: Array<{ message?: string; status?: number }>;
-
-  constructor(
-    message: string,
-    options?: {
-      status?: number;
-      errors?: Array<{ message?: string; status?: number }>;
-    }
-  ) {
-    super(message);
-    this.name = "AniListError";
-    this.status = options?.status;
-    this.errors = options?.errors;
-  }
-}
 
 // ─── GraphQL Query ────────────────────────────────────────────
 
@@ -612,7 +387,6 @@ export async function getAnime(id: number): Promise<AnimeDetails> {
         query: GET_ANIME_QUERY,
         variables: { id },
       }),
-      next: { revalidate: 21600, tags: [`anime-${id}`] },
     });
   } catch (networkError) {
     throw new AniListError(

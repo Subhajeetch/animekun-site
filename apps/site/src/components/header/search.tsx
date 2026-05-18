@@ -4,12 +4,14 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { searchAnimes, MediaFormat, AniListError } from "@/anilist/search-animes";
-import type { AnimeResult } from "@/anilist/search-animes";
+import { AnimeResult, MediaFormat, AniListError } from "@repo/anilist";
+//import type { AnimeResult } from "@/anilist/search-animes";
 import CustomImage from "@/components/custom-image";
 import Link from "next/link";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { searchAnimes } from "@/utils/search-animes";
+
+
 
 interface SearchResult {
   id: number;
@@ -143,6 +145,8 @@ function ResultCard({
       <CustomImage
         src={result.image}
         alt={result.title}
+        width={70}
+        height={70}
         className="w-14 h-14 object-cover shrink-0 ring-1 ring-primary/50"
       />
       <div className="flex-1 min-w-0">

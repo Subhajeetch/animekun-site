@@ -1,0 +1,13 @@
+{
+  "extends": "../typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "strictNullChecks": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "files": ["../../apps/site/node_modules/next/types/global.d.ts"],
+  "include": ["src"]
+}

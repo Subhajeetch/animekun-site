@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 // routes import
-import { anilist} from "./routes";
+import { anilist } from "./routes/index.js";
 
 
 const app = new Hono<{}>();

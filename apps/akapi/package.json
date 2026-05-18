@@ -1,0 +1,22 @@
+{
+  "name": "hono",
+  "type": "module",
+  "dependencies": {
+    "@repo/anilist": "workspace:*",
+    "hono": "^4.12.19"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "vercel:build": "vercel build",
+    "vercel:dev": "vercel dev"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^1.19.14",
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3",
+    "vercel": "^54.1.0"
+  }
+}

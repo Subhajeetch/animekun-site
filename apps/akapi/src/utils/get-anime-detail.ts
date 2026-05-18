@@ -23,9 +23,9 @@ import type {
   AnimeTrailer,
   AnimeStudio,
   AnimeExternalLink,
-} from "@repo/anilist";
+} from "./types.js";
 
-import { AniListError } from "@repo/anilist";
+import { AniListError } from "./classes.js";
 
 
 const ANILIST_ENDPOINT = config.ANILIST.URI;

@@ -18,8 +18,8 @@ import type {
   PageInfo,
   SearchAnimesParams,
   SearchAnimesResult,
-} from "@repo/anilist";
-import { AniListError } from "@repo/anilist";
+} from "./types.js";
+import { AniListError } from "./classes.js";
 
 const ANILIST_ENDPOINT = config.ANILIST.URI;
 

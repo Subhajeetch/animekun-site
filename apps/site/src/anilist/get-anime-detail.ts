@@ -604,12 +604,14 @@ export async function getAnime(id: number): Promise<AnimeDetails> {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        Origin: "https://anilist.co",
+        Referer: "https://anilist.co",
       },
       body: JSON.stringify({
         query: GET_ANIME_QUERY,
         variables: { id },
       }),
-      // Next.js — revalidate every 6 hours, tag for on-demand purging
       next: { revalidate: 21600, tags: [`anime-${id}`] },
     });
   } catch (networkError) {

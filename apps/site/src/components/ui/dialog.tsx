@@ -370,8 +370,7 @@ function DialogContent({
           zIndex: 50,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          paddingLeft: "8px",
+          justifyContent: "center"
         }}
       >
         {/* ── Backdrop ── */}

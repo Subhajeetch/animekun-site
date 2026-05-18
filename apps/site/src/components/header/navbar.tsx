@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
@@ -18,7 +17,6 @@ import {
 
 import { DiscordIcon } from "@/components/icons";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -459,7 +457,7 @@ function MenuButton({
       aria-controls="main-sidebar"
       aria-haspopup="true"
       className={[
-        "bg-background rounded-none w-10 h-10 md:w-11 md:h-11 flex items-center justify-center",
+        "rounded-none w-10 h-10 md:w-11 md:h-11 flex items-center justify-center",
         "border border-border",
         "text-foreground/50 hover:text-primary hover:border-primary",
         "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary",
@@ -480,7 +478,6 @@ export const useNavMenu = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeItem, setActiveItem] = useState<string>("home");
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const firstFocusRef = useRef<HTMLButtonElement>(null);
@@ -489,11 +486,6 @@ export const useNavMenu = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Close menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   // Body scroll lock
   useEffect(() => {

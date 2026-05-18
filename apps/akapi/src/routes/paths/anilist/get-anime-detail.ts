@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 
-import { getAnime } from "@/utils/get-anime-detail.js";
-import { searchAnimes } from "@/utils/search-animes.js";
+import { getAnime } from "../../../utils/get-anime-detail.js";
+import { searchAnimes } from "../../../utils/search-animes.js";
 import type { SearchAnimesParams } from "@repo/anilist";
 
 const getAnimeDetail = new Hono<{}>();

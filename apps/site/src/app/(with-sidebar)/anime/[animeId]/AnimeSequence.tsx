@@ -55,7 +55,7 @@ interface Props {
 
 export default function AnimeSequence({ relations, currentId }: Props) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 max-h-181.25 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-2">
       {relations.map((rel) => {
         const title =
           rel.title.english ??

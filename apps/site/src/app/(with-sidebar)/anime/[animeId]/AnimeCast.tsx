@@ -8,18 +8,31 @@ interface Props {
   characters: AnimeCharacter[];
 }
 
-const INITIAL_SHOW = 12;
+function getHiddenClass(index: number, expanded: boolean) {
+  if (expanded) return "";
+
+  // 16+ hidden on all screens
+  if (index >= 16) return "hidden";
+
+  // 12-15 visible only on lg+
+  if (index >= 12) return "hidden lg:flex";
+
+  // 9-11 visible only on md+
+  if (index >= 9) return "hidden md:flex";
+
+  return "";
+}
 
 export default function AnimeCast({ characters }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  const visible = expanded ? characters : characters.slice(0, INITIAL_SHOW);
-  const hasMore = characters.length > INITIAL_SHOW;
+  // Mobile is the smallest visible count
+  const hasMore = characters.length > 9;
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-px bg-zinc-800">
-        {visible.map((char) => {
+      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-8 gap-px bg-zinc-800">
+        {characters.map((char, index) => {
           const name = char.name.full ?? char.name.native ?? "Unknown";
           const vaName = char.voiceActor?.name.full ?? null;
           const img = char.image.large ?? char.image.medium ?? null;
@@ -28,7 +41,7 @@ export default function AnimeCast({ characters }: Props) {
           return (
             <div
               key={char.id}
-              className="bg-zinc-900/80 flex flex-col group"
+              className={`bg-zinc-900/80 flex flex-col group ${getHiddenClass(index, expanded)}`}
             >
               {/* Character image */}
               <div className="aspect-[3/4] overflow-hidden bg-zinc-800 relative">
@@ -42,7 +55,11 @@ export default function AnimeCast({ characters }: Props) {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-zinc-600">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-8 h-8"
+                    >
                       <path d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z" />
                     </svg>
                   </div>
@@ -75,6 +92,7 @@ export default function AnimeCast({ characters }: Props) {
                         className="w-4 h-4 object-cover flex-shrink-0"
                       />
                     )}
+
                     <p className="text-[10px] text-zinc-600 line-clamp-1">
                       {vaName}
                     </p>

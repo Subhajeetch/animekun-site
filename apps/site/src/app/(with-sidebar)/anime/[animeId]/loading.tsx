@@ -1,8 +1,8 @@
 export default function AnimeLoading() {
   return (
-    <div className="min-h-screen bg-[#0e0e11] animate-pulse">
+    <div className="min-h-screen bg-background animate-pulse">
       {/* Banner skeleton */}
-      <div className="w-full h-56 md:h-80 lg:h-96 bg-zinc-900" />
+      <div className="w-full h-56 md:h-80 lg:h-96 bg-primary/3" />
 
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12">
         {/* Hero row */}

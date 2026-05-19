@@ -32,7 +32,7 @@ export function Header() {
       <div className="flex-1 hidden md:block"></div>
 
       <div>
-       <Button className="h-10 md:h-11 rounded-none px-2 md:px-5 font-bold bg-primary">
+       <Button className="h-10 md:h-11 rounded-none px-2 md:px-5 font-bold bg-primary/80 hover:bg-primary">
           Login
         </Button> 
       </div>

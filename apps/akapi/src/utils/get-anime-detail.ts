@@ -379,10 +379,7 @@ export async function getAnime(id: number): Promise<AnimeDetails> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        Origin: "https://anilist.co",
-        Referer: "https://anilist.co",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: GET_ANIME_QUERY,
@@ -390,6 +387,7 @@ export async function getAnime(id: number): Promise<AnimeDetails> {
       }),
     });
   } catch (networkError) {
+   // console.error("Network error while fetching AniList API:", networkError);
     throw new AniListError(
       `Network request failed: ${
         networkError instanceof Error ? networkError.message : "Unknown network error"
@@ -413,19 +411,28 @@ export async function getAnime(id: number): Promise<AnimeDetails> {
   }
 
   if (json.errors && json.errors.length > 0) {
-    const first = json.errors[0]!;
-    // 404 from AniList comes back as a GraphQL error with status 404
-    if (first.status === 404) {
-      throw new AniListError(`Anime with ID ${id} was not found.`, {
-        status: 404,
-        errors: json.errors,
-      });
-    }
-    throw new AniListError(`AniList GraphQL error: ${first.message || "Unknown error"}`, {
-      status: first.status,
+  console.error(
+    "AniList GraphQL Errors:",
+    JSON.stringify(json.errors, null, 2)
+  );
+
+  const first = json.errors[0]!;
+
+  if (first.status === 404) {
+    throw new AniListError(`Anime with ID ${id} was not found.`, {
+      status: 404,
       errors: json.errors,
     });
   }
+
+  throw new AniListError(
+    `AniList GraphQL error: ${first.message || "Unknown error"}`,
+    {
+      status: first.status,
+      errors: json.errors,
+    }
+  );
+}
 
   if (!json.data?.Media) {
     throw new AniListError(

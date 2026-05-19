@@ -250,6 +250,7 @@ export async function searchAnimes(
       body: JSON.stringify({ query: SEARCH_QUERY, variables }),
     });
   } catch (networkError) {
+    console.error("Network error while fetching AniList API:", networkError);
     throw new AniListError(
       `Network request failed: ${
         networkError instanceof Error

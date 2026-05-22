@@ -373,7 +373,7 @@ export default async function AnimePage({
                         {/* Action buttons */}
             <div className="flex flex-wrap gap-3">
               <Link
-                href={anime.siteUrl ?? "#"}
+                href={`/watch/${animeId}`}
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary/80 hover:bg-primary text-sm font-bold uppercase tracking-wider transition-colors"
               >

@@ -176,6 +176,9 @@ export interface AnimeDetails {
   bannerImage: string | null;
   trailer: AnimeTrailer | null;
 
+  nextAiringEpisode: AiringEpisode | null;
+  airingSchedule:    AiringSchedulePage;
+
   // Classification
   format: MediaFormat | null;
   status: MediaStatus | null;
@@ -222,6 +225,30 @@ export interface AnimeDetails {
   streamingEpisodes: AnimeStreamingEpisode[];
   siteUrl: string | null;
 }
+
+export interface AiringEpisode {
+  id: number;
+  episode: number;
+  /** Unix timestamp in seconds */
+  airingAt: number;
+  /** Convenience: airingAt converted to a JS Date object */
+  airingAtDate: Date;
+  /** Seconds until air. Negative means it has already aired. */
+  timeUntilAiring: number;
+  hasAired: boolean;
+}
+
+export interface AiringSchedulePage {
+  pageInfo: {
+    total: number;
+    currentPage: number;
+    lastPage: number;
+    hasNextPage: boolean;
+    perPage: number;
+  };
+  episodes: AiringEpisode[];
+}
+
 
 
 export enum MediaSort {

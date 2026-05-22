@@ -176,6 +176,9 @@ export interface AnimeDetails {
   bannerImage: string | null;
   trailer: AnimeTrailer | null;
 
+  nextAiringEpisode: AiringEpisode | null;
+  airingSchedule:    AiringSchedulePage;
+
   // Classification
   format: MediaFormat | null;
   status: MediaStatus | null;
@@ -348,4 +351,30 @@ export interface SearchAnimesResult {
   results: AnimeResult[];
 }
 
-
+export interface AiringEpisode {
+  id: number;
+  episode: number;
+  /** Unix timestamp in seconds */
+  airingAt: number;
+  /** Convenience: airingAt converted to a JS Date object */
+  airingAtDate: Date;
+  /** Seconds until air. Negative means it has already aired. */
+  timeUntilAiring: number;
+  hasAired: boolean;
+}
+ 
+/**
+ * One page of the per-episode airing schedule (max 50 episodes per page).
+ * Check pageInfo.hasNextPage to know if more pages exist.
+ * Use getEpisodes(id) to fetch all pages at once.
+ */
+export interface AiringSchedulePage {
+  pageInfo: {
+    total: number;
+    currentPage: number;
+    lastPage: number;
+    hasNextPage: boolean;
+    perPage: number;
+  };
+  episodes: AiringEpisode[];
+}

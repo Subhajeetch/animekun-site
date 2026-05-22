@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 
-import { getAnime } from "../../../utils/get-anime-detail.js";
+import { getAnime, getEpisodes } from "../../../utils/get-anime-detail.js";
 import { searchAnimes } from "../../../utils/search-animes.js";
 import type { SearchAnimesParams } from "@repo/anilist";
 
@@ -42,6 +42,18 @@ getAnimeDetail.get("/anime/:id", async (c) => {
         return c.json({ error: "Failed to fetch anime details" }, 500);
     }
  
+});
+
+
+getAnimeDetail.get("/anime/episodes/:id", async (c) => {
+    const { id } = c.req.param();
+    try {
+        const episodes = await getEpisodes(Number(id));
+        return c.json(episodes);
+    } catch (error) {
+        console.error("Error fetching airing episodes:", error);
+        return c.json({ error: "Failed to fetch airing episodes" }, 500);
+    }
 });
 
 

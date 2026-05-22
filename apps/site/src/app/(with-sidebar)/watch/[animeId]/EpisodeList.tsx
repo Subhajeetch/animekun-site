@@ -37,7 +37,7 @@ nextAirEpisode,
       })
       .sort((a, b) => Number(a.episode) - Number(b.episode)),
   [episodes, nextAirEpisode]
-);
+);  
 
   const totalEps = regularEpisodes.length;
   const pageCount = Math.ceil(totalEps / PAGE_SIZE);

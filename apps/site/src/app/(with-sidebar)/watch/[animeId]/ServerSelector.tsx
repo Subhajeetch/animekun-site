@@ -6,6 +6,14 @@ import { Server } from '@/types/watch';
 import { fetchKwikUrl } from '@/utils/getServers';
 import { addServerToHistory } from '@/utils/watchStorage';
 
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 interface ServerSelectorProps {
   servers: {
     anilist: Server[];
@@ -213,23 +221,31 @@ export default function ServerSelector({
   : 'tmdb';
 
   return (
-    <div className="border border-zinc-800 bg-zinc-900/30">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
-        <svg
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-4 h-4 text-zinc-500"
-        >
-          <path d="M3.75 3a.75.75 0 00-.75.75v.5c0 .414.336.75.75.75H4c6.075 0 11 4.925 11 11v.25c0 .414.336.75.75.75h.5a.75.75 0 00.75-.75V16C17 8.82 11.18 3 4 3h-.25z" />
-          <path d="M3 8.75A.75.75 0 013.75 8H4a8 8 0 018 8v.25a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75V16a6 6 0 00-6-6h-.25A.75.75 0 013 9.25v-.5zM7 15a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-        <span className="text-[14px] uppercase tracking-[0.22em] font-bold text-zinc-500">
-          Servers
-        </span>
-      </div>
+    <div className=" border-zinc-800 bg-zinc-900/30">
 
-      <div className="p-3">
+      <Accordion type="single" collapsible defaultValue="item-1">
+  <AccordionItem value="item-1">
+<AccordionTrigger className="px-4 py-3 border-zinc-800 bg-zinc-900/50 hover:no-underline">
+  <div className="flex items-center gap-3">
+    <svg
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className="w-4 h-4 text-zinc-500"
+    >
+      <path d="M3.75 3a.75.75 0 00-.75.75v.5c0 .414.336.75.75.75H4c6.075 0 11 4.925 11 11v.25c0 .414.336.75.75.75h.5a.75.75 0 00.75-.75V16C17 8.82 11.18 3 4 3h-.25z" />
+      <path d="M3 8.75A.75.75 0 013.75 8H4a8 8 0 018 8v.25a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75V16a6 6 0 00-6-6h-.25A.75.75 0 013 9.25v-.5zM7 15a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+
+    <span className="text-[14px] uppercase tracking-[0.22em] font-bold text-zinc-500">
+      Servers
+    </span>
+  </div>
+</AccordionTrigger>
+    <AccordionContent>
+
+
+
+      <div className="p-3 border-x border-b border-zinc-800 ">
         {!hasAnyServer ? (
           <p className="text-xs text-zinc-600 uppercase tracking-widest py-2 px-1">
             Select an episode first
@@ -266,6 +282,9 @@ export default function ServerSelector({
           </Tabs>
         )}
       </div>
+          </AccordionContent>
+  </AccordionItem>
+</Accordion>
     </div>
   );
 }

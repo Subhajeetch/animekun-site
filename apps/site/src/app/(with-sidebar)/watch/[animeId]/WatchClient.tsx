@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import VideoPlayer from './VideoPlayer';
@@ -17,6 +17,9 @@ import {
   setLanguage,
   getPreferredServer,
 } from '@/utils/watchStorage';
+
+
+import MusicBars from './PlayBars';
 
 interface WatchClientProps {
   anilistId: string;
@@ -60,6 +63,31 @@ export default function WatchClient({
   const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
   const [playerUrl, setPlayerUrl] = useState<string | null>(null);
   const [autoplay, setAutoplay] = useState(true);
+
+
+const leftColRef = useRef<HTMLDivElement>(null);
+const [leftColHeight, setLeftColHeight] = useState<number>(0);
+
+useEffect(() => {
+  const updateHeight = () => {
+    if (leftColRef.current) {
+      setLeftColHeight(leftColRef.current.offsetHeight);
+    }
+  };
+
+  updateHeight(); // initial read
+
+  const observer = new ResizeObserver(updateHeight); // catches accordion/server expand
+  if (leftColRef.current) observer.observe(leftColRef.current);
+
+  window.addEventListener('resize', updateHeight); // catches window resize
+
+  return () => {
+    observer.disconnect();
+    window.removeEventListener('resize', updateHeight);
+  };
+}, []);
+
 
   // ── Derived data ──────────────────────────────────────────────────────────
   const regularEpisodes = useMemo(() => {
@@ -159,8 +187,8 @@ if (first) {
 
       const preferred = getPreferredServer(allIds);
       const defaultServer =
-        builtServers.anilist[0] ??
         builtServers.mal[0] ??
+        builtServers.anilist[0] ??
         builtServers.tmdb[0];
 
       const server = preferred
@@ -304,7 +332,7 @@ if (first) {
     (currentEpisode != null ? `Episode ${currentEpisode}` : null);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground lg:px-2">
       {/* Top breadcrumb */}
       <div className=" pt-4 pb-2 px-1 hidden lg:block">
         <nav aria-label="Breadcrumb">
@@ -333,9 +361,9 @@ if (first) {
 
       {/* Main layout */}
       <div className=" pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-4 xl:gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-4 xl:gap-5 lg:items-stretch">
           {/* ── Left: Player + Episode Info ── */}
-          <div className="flex flex-col gap-4">
+          <div ref={leftColRef} className="flex flex-col lg:self-start w-full">
             {/* Player */}
             <VideoPlayer
               src={playerUrl}
@@ -344,124 +372,35 @@ if (first) {
               episodeTitle={epTitle ?? undefined}
               autoplay={autoplay}
               onAutoplayChange={setAutoplay}
+              handleEpisodeSelect={handleEpisodeSelect}
+              prevEp={prevEp}
+              nextEp={nextEp}
             />
 
-            {/* Prev / Next */}
-            <div className="flex gap-2">
-              <button
-                onClick={() =>
-                  prevEp?.episodeNumber != null &&
-                  handleEpisodeSelect(prevEp, prevEp.episodeNumber)
-                }
-                disabled={!prevEp}
-                aria-label="Previous episode"
-                className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="w-3.5 h-3.5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Prev
-              </button>
-
-              <button
-                onClick={() =>
-                  nextEp?.episodeNumber != null &&
-                  handleEpisodeSelect(nextEp, nextEp.episodeNumber)
-                }
-                disabled={!nextEp}
-                aria-label="Next episode"
-                className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
-              >
-                Next
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="w-3.5 h-3.5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Anime info strip */}
-            <div className="flex items-center gap-3 py-3 border-t border-zinc-800">
-              {animeCover && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={animeCover}
-                  alt={animeTitle}
-                  width={44}
-                  height={62}
-                  className="w-11 aspect-2/3 object-cover border border-zinc-700 shrink-0"
-                />
-              )}
-              <div className="min-w-0">
-                <Link
-                  href={`/anime/${animeSlug}`}
-                  className="text-sm font-black leading-tight hover:text-primary transition-colors line-clamp-1"
-                >
-                  {animeTitle}
-                </Link>
-                {currentEpisodeData?.overview && (
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed line-clamp-2">
-                    {currentEpisodeData.overview}
-                  </p>
-                )}
+            <div className="flex gap-3 px-2 py-4 border-x  border-b">
+              <div className="bg-primary/20 p-3 shrink-0">
+                <MusicBars className="h-6" barClassName="w-[6px]" />
               </div>
-            </div>
 
-            {/* Server selector (mobile — below player) */}
-            <div className="lg:hidden">
-              <SectionHeader>Servers</SectionHeader>
-              <ServerSelector
-                servers={servers}
-                selectedServerId={selectedServerId}
-                language={language}
-                malId={resolvedMalId}
-                episodeNumber={currentEpisode ?? 1}
-                onServerSelect={handleServerSelect}
-                onLanguageChange={handleLanguageChange}
-              />
-            </div>
+              <div className="flex min-w-0 flex-col flex-1">
+                <span className="text-[16px] uppercase tracking-widest text-zinc-500 font-bold mr-auto">
+                  Episode {currentEpisode}
+                </span>
 
-            {/* Episodes (mobile — below servers) */}
-            <div className="lg:hidden">
-              <SectionHeader>
-                Episodes{' '}
-                {regularEpisodes.length > 0 && (
-                  <span className="text-zinc-600 ml-1">
-                    ({regularEpisodes.length})
-                  </span>
-                )}
-              </SectionHeader>
-              <EpisodeListWrapper
-                loadingState={loadingState}
-                fetchError={fetchError}
-                regularEpisodes={regularEpisodes}
-                currentEpisode={currentEpisode}
-                watchedEpisodes={watchedEpisodes}
-                nextAirEpisode={nextAirEpisode}
-                onEpisodeSelect={handleEpisodeSelect}
-              />
+                <span className="text-[13px] uppercase tracking-widest text-zinc-500 truncate">
+                  {epTitle ?? Number(currentEpisode) ?? 'Select an episode'}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* ── Right sidebar (desktop) ── */}
-          <aside className="hidden lg:flex flex-col gap-4">
-            {/* Server selector */}
-            <div>
+          <div
+  style={leftColHeight ? { height: `${leftColHeight}px` } : undefined}
+  className="flex flex-col gap-4 px-2 lg:px-0 lg:sticky lg:top-0 lg:min-h-0"
+>
+            {/* Server selector — natural height */}
+            <div className="lg:shrink-0">
               <ServerSelector
                 servers={servers}
                 selectedServerId={selectedServerId}
@@ -473,9 +412,9 @@ if (first) {
               />
             </div>
 
-            {/* Episode list */}
-            <div>
-              <div className="border border-zinc-800 bg-zinc-900/30 ">
+            {/* Episode list — fills remaining height, scrolls internally */}
+            <div className="lg:flex-1 lg:min-h-0">
+              <div className="border border-zinc-800 bg-zinc-900/30 lg:h-full lg:overflow-y-auto">
                 <EpisodeListWrapper
                   loadingState={loadingState}
                   fetchError={fetchError}
@@ -488,7 +427,7 @@ if (first) {
                 />
               </div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </div>
@@ -496,17 +435,6 @@ if (first) {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-function SectionHeader({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-3 mb-3">
-      <h2 className="text-[10px] uppercase tracking-[0.22em] font-bold text-zinc-500 whitespace-nowrap">
-        {children}
-      </h2>
-      <div className="flex-1 h-px bg-zinc-800" />
-    </div>
-  );
-}
 
 interface EpisodeListWrapperProps {
   loadingState: LoadingState;

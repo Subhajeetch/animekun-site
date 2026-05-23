@@ -16,6 +16,8 @@ interface EpisodeListProps {
   watchedEpisodes: number[];
   onEpisodeSelect: (ep: EpisodeData, num: number) => void;
   nextAirEpisode?: number;
+  comHeight?: number | null;
+  isLg?: boolean;
 }
 
 const PAGE_SIZE = 100;
@@ -25,7 +27,9 @@ export default function EpisodeList({
   currentEpisode,
   watchedEpisodes,
   onEpisodeSelect,
-nextAirEpisode,
+  nextAirEpisode,
+  comHeight,
+  isLg
 }: EpisodeListProps) {
   const regularEpisodes = useMemo(
   () =>
@@ -69,8 +73,9 @@ nextAirEpisode,
   }
 
   return (
+    
     <div>
-      <div className="flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between">
+      <div className="flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between ">
         <span className="flex items-center gap-3 text-[13px] uppercase tracking-[0.22em] font-bold text-zinc-500">
           <TvMinimal className="w-4 h-4 text-zinc-500" />
           Episodes
@@ -120,7 +125,9 @@ nextAirEpisode,
           </div>
         )}
       </div>
-      <div className="max-h-[455px] overflow-y-auto">
+      <div 
+      className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto"
+      >
       {!useCompact ? (
         <div className="flex flex-col gap-0" role="listbox" aria-label="Episode list">
           {pageEpisodes.map((ep) => {
@@ -138,20 +145,20 @@ nextAirEpisode,
                 onClick={() => onEpisodeSelect(ep, num)}
                 className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors last:border-b-0 ${
                   isActive
-                    ? 'bg-primary/10 border-l-2 border-l-primary text-white pl-2.5'
+                    ? 'bg-primary/10 border-l-2 border-l-primary text-foreground pl-2.5'
                     : isWatched
                     ? 'opacity-50 hover:opacity-80 hover:bg-zinc-800/40'
                     : 'hover:bg-zinc-800/40'
                 }`}
               >
                 <span
-                  className={`text-[10px] font-black tabular-nums w-6 shrink-0 ${
+                  className={`text-[13px] font-black tabular-nums w-6 shrink-0 ${
                     isActive ? 'text-primary' : 'text-zinc-600'
                   }`}
                 >
                   {num}
                 </span>
-                <span className="text-xs text-zinc-300 font-medium truncate leading-snug">
+                <span className="text-[13px] text-zinc-300 font-medium truncate leading-snug">
                   {epTitle}
                 </span>
                 {isActive && (
@@ -162,7 +169,7 @@ nextAirEpisode,
           })}
         </div>
       ) : (
-        <div className="flex flex-wrap gap-1" role="listbox" aria-label="Episode list">
+        <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-5 gap-1" role="listbox" aria-label="Episode list">
           {pageEpisodes.map((ep) => {
             const num = Number(ep.episode);
             const isActive = currentEpisode === num;

@@ -93,6 +93,27 @@ function buildAnilistServers(
       isStatic: true,
       category: 'anilist',
     },
+    {
+      id: 'vidnest.fun.anime',
+      name: 'Animekun 4',
+      url: `https://vidnest.fun/anime/${anilistId}/${episodeNumber}/${language}`,
+      isStatic: true,
+      category: 'anilist',
+    },
+    {
+      id: 'megaplay.buzz.ani',
+      name: 'Animekun 5',
+      url: `https://megaplay.buzz/stream/ani/${anilistId}/${episodeNumber}/${language}`,
+      isStatic: true,
+      category: 'anilist',
+    },
+    {
+      id: 'dropfile.cc',
+      name: 'Animekun 6',
+      url: `https://dropfile.cc/player/tv/anilist-${anilistId}/1/${episodeNumber}?audio=${language}&lang=en`,
+      isStatic: true,
+      category: 'anilist',
+    },
   ];
 }
 
@@ -112,6 +133,14 @@ function buildMalServers(params: GetServersParams): Server[] {
       id: 'animeplay.cfd-mal',
       name: 'Animekun 2',
       url: `https://animeplay.cfd/stream/mal/${malId}/${episodeNumber}/${language}`,
+      isStatic: true,
+      category: 'mal',
+    },
+
+    {
+      id: 'megaplay.buzz.mal',
+      name: 'Animekun 3',
+      url: `https://megaplay.buzz/stream/mal/${malId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'mal',
     },

@@ -9,6 +9,9 @@ interface VideoPlayerProps {
   episodeTitle?: string;
   autoplay?: boolean;
   onAutoplayChange?: (val: boolean) => void;
+  handleEpisodeSelect?: (ep: any, num: number) => void;
+  prevEp?: any;
+  nextEp?: any;
 }
 
 export default function VideoPlayer({
@@ -18,6 +21,9 @@ export default function VideoPlayer({
   currentEpisode,
   autoplay = true,
   onAutoplayChange,
+  handleEpisodeSelect,
+  prevEp,
+  nextEp,
 }: VideoPlayerProps) {
   const [localAutoplay, setLocalAutoplay] = useState(autoplay);
 
@@ -75,17 +81,62 @@ export default function VideoPlayer({
 
       {/* Player controls bar */}
       <div className="flex items-center gap-4 px-3 py-2 bg-zinc-900/80 border border-t-0 border-zinc-800">
-        <span className="text-[12px] uppercase tracking-widest text-zinc-500 font-semibold mr-auto">
-           Playing Episode {currentEpisode}: {episodeTitle ?? title ?? 'Select an episode'}
-        </span>
 
-        <ToggleButton
-          active={localAutoplay}
-          onClick={handleAutoplayToggle}
-          label="Autoplay"
-          aria-label={`Autoplay is ${localAutoplay ? 'on' : 'off'}`}
-        />
-      </div>
+                  {/* Prev / Next */}
+              <button
+                onClick={() =>
+                  prevEp?.episodeNumber != null &&
+                  handleEpisodeSelect?.(prevEp, prevEp.episodeNumber)
+                }
+                disabled={!prevEp}
+                aria-label="Previous episode"
+                className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-3.5 h-3.5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Prev
+              </button>
+
+
+                  <ToggleButton
+                    active={localAutoplay}
+                    onClick={handleAutoplayToggle}
+                    label="Autoplay"
+                    aria-label={`Autoplay is ${localAutoplay ? 'on' : 'off'}`}
+                  />
+
+              <button
+                onClick={() =>
+                  nextEp?.episodeNumber != null &&
+                  handleEpisodeSelect?.(nextEp, nextEp.episodeNumber)
+                }
+                disabled={!nextEp}
+                aria-label="Next episode"
+                className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
+              >
+                Next
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-3.5 h-3.5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
     </div>
   );
 }

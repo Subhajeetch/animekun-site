@@ -256,7 +256,7 @@ function DialogContent({
 
     document.body.style.overflow = "hidden";
     // Pad by the scrollbar width so fixed headers / the page don't shift
-    document.body.style.paddingRight = `${scrollbarWidth}px`;
+    document.body.style.paddingRight = `${0}px`;
 
     return () => {
       document.body.style.overflow = prevOverflow;

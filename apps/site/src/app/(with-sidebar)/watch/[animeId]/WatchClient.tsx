@@ -62,7 +62,6 @@ export default function WatchClient({
 
   const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
   const [playerUrl, setPlayerUrl] = useState<string | null>(null);
-  const [autoplay, setAutoplay] = useState(true);
 
 
 const leftColRef = useRef<HTMLDivElement>(null);
@@ -229,7 +228,7 @@ useEffect(() => {
 
       // Update URL
       const params = new URLSearchParams(searchParams.toString());
-      params.set('ep', String(num));
+      params.set('episode', String(num));
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
       // Save to localStorage
@@ -342,6 +341,16 @@ useEffect(() => {
     currentEpisodeData?.nameTvdb ??
     (currentEpisode != null ? `Episode ${currentEpisode}` : null);
 
+
+    const currentServer = useMemo(() => {
+  if (!selectedServerId) return null;
+  return (
+    [...servers.anilist, ...servers.mal, ...servers.tmdb].find(
+      (s) => s.id === selectedServerId
+    ) ?? null
+  );
+}, [selectedServerId, servers]);
+
   return (
     <div className="min-h-screen bg-background text-foreground lg:px-2">
       {/* Top breadcrumb */}
@@ -378,11 +387,11 @@ useEffect(() => {
             {/* Player */}
             <VideoPlayer
               src={playerUrl}
+              currentServer={currentServer}
+              animeCover={animeCover}
               title={animeTitle}
               currentEpisode={currentEpisodeData?.absoluteEpisodeNumber  ?? Number(currentEpisode)}
               episodeTitle={epTitle ?? undefined}
-              autoplay={autoplay}
-              onAutoplayChange={setAutoplay}
               handleEpisodeSelect={handleEpisodeSelect}
               prevEp={prevEp}
               nextEp={nextEp}

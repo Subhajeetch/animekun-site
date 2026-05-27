@@ -52,7 +52,7 @@ export default function WatchClient({
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [episodesData, setEpisodesData] = useState<AnimeEpisodesResponse | null>(null);
-  const [loadingState, setLoadingState] = useState<LoadingState>('idle');
+  const [loadingState, setLoadingState] = useState<LoadingState>('loading');
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [currentEpisode, setCurrentEpisodeState] = useState<number | null>(null);
@@ -127,7 +127,7 @@ useEffect(() => {
         return r.json() as Promise<AnimeEpisodesResponse>;
         })
         .then((data) => {
-          console.log('Fetched episodes data:', data);
+          //console.log('Fetched episodes data:', data);
         setEpisodesData(data);
         setLoadingState('success');
         })
@@ -375,6 +375,7 @@ if (first) {
               handleEpisodeSelect={handleEpisodeSelect}
               prevEp={prevEp}
               nextEp={nextEp}
+              loadingState={loadingState}
             />
 
             <div className="flex gap-3 px-2 py-4 border-x  border-b">

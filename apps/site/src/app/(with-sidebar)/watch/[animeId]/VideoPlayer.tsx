@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { LoaderCircle } from 'lucide-react';
+
+type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
 interface VideoPlayerProps {
   src: string | null;
@@ -12,6 +15,7 @@ interface VideoPlayerProps {
   handleEpisodeSelect?: (ep: any, num: number) => void;
   prevEp?: any;
   nextEp?: any;
+  loadingState: LoadingState;
 }
 
 export default function VideoPlayer({
@@ -24,6 +28,7 @@ export default function VideoPlayer({
   handleEpisodeSelect,
   prevEp,
   nextEp,
+  loadingState
 }: VideoPlayerProps) {
   const [localAutoplay, setLocalAutoplay] = useState(autoplay);
 
@@ -45,7 +50,16 @@ export default function VideoPlayer({
         style={{ aspectRatio: '16/9' }}
         aria-label={`Video player${title ? ` — ${title}` : ''}`}
       >
-        {iframeSrc ? (
+        {loadingState === "loading" ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-zinc-950">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <LoaderCircle size={24} className="animate-spin" />
+            </div>
+            <p className="text-xs uppercase tracking-widest text-foreground font-medium">
+              Getting episodes & servers...
+            </p>
+          </div>
+        ) : iframeSrc ? (
           <iframe
             key={iframeSrc}
             src={iframeSrc}

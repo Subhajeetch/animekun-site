@@ -147,16 +147,16 @@ function ResultCard({
         alt={result.title}
         width={70}
         height={70}
-        className="w-14 h-14 object-cover shrink-0 ring-1 ring-primary/50"
+        className="w-18 h-24 object-cover shrink-0 ring-1 ring-primary/50"
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+          <span className="font-semibold text-[16px] text-foreground truncate group-hover:text-primary transition-colors">
             {result.title}
           </span>
           <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 border-primary/50 text-primary/50 flex items-center gap-1 rounded-none"
+            className="text-[12px] px-1.5 py-0 border-primary/50 text-primary/50 flex items-center gap-1 rounded-none"
           >
             {result.type === "anime" ? (
               <Tv size={9} />
@@ -166,15 +166,15 @@ function ResultCard({
             {result.type === "anime" ? "Anime" : "Movie"}
           </Badge>
         </div>
-        <p className="text-xs text-foreground/50 mt-0.5 line-clamp-1">{result.description}</p>
+        <p className="text-xs text-foreground/50 mt-0.5 line-clamp-2">{result.description}</p>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-[11px] text-yellow-500">★ {result.rating}</span>
-          <span className="text-[10px] text-foreground/30">·</span>
-          <span className="text-[10px] text-foreground/30">{result.year}</span>
+          <span className="text-[14px] text-yellow-500">★ {result.rating}</span>
+          <span className="text-[13px] text-foreground/30">·</span>
+          <span className="text-[13px] text-foreground/30">{result.year}</span>
           {result.genre.slice(0, 2).map((g) => (
             <span
               key={g}
-              className="text-[10px] text-violet-400/70 bg-violet-500/10 px-1.5 py-0.5"
+              className="text-[13px] text-violet-400/70 bg-violet-500/10 px-1.5 py-0.5"
             >
               {g}
             </span>
@@ -358,13 +358,15 @@ const SearchComponent = () => {
             {/* Loading skeleton */}
             {loading && (
               <div className="px-4 py-3 space-y-3">
+                <div className="h-3 w-1/5 mb-2 bg-primary/10 animate-pulse"></div>
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex gap-3 animate-pulse">
-                    <div className="w-14 h-14 bg-primary/10 shrink-0" />
+                    <div className="w-18 h-24 bg-primary/10 shrink-0" />
                     <div className="flex-1 space-y-2 py-1">
-                      <div className="h-3 bg-primary/10  w-2/5" />
+                      <div className="h-5 bg-primary/10  w-2/5" />
                       <div className="h-2.5 bg-primary/10  w-4/5" />
-                      <div className="h-2 bg-primary/10  w-1/4" />
+                      <div className="h-2.5 bg-primary/10  w-4/8" />
+                      <div className="h-3 bg-primary/10  w-1/4" />
                     </div>
                   </div>
                 ))}

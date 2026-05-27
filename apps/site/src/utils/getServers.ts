@@ -107,13 +107,13 @@ function buildAnilistServers(
       isStatic: true,
       category: 'anilist',
     },
-    {
-      id: 'dropfile.cc',
-      name: 'Animekun 6',
-      url: `https://dropfile.cc/player/tv/anilist-${anilistId}/1/${episodeNumber}?audio=${language}&lang=en`,
-      isStatic: true,
-      category: 'anilist',
-    },
+    // {
+    //   id: 'dropfile.cc',
+    //   name: 'Animekun 6',
+    //   url: `https://dropfile.cc/player/tv/anilist-${anilistId}/1/${episodeNumber}?audio=${language}&lang=en`,
+    //   isStatic: true,
+    //   category: 'anilist',
+    // },
   ];
 }
 

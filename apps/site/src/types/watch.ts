@@ -63,3 +63,21 @@ export interface PlayerSettings {
   pip: boolean;
   fullscreen: boolean;
 }
+
+
+
+export type PlayerEvent =
+  | { type: 'complete' }
+  | { type: 'progress'; currentTime: number; duration: number; percent: number };
+
+export type ServerNormalizer = (data: unknown) => PlayerEvent | null;
+
+// Add `normalizer` to your existing Server interface:
+export interface Server {
+  id: string;
+  name: string;
+  url: string;
+  isStatic: boolean;
+  category: 'anilist' | 'mal' | 'tmdb';
+  normalizer?: ServerNormalizer; // ← new
+}

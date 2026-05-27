@@ -137,32 +137,43 @@ useEffect(() => {
       });
   }, [anilistId]);
 
-  // ── Init from localStorage + URL after episodes load ──────────────────────
-  useEffect(() => {
-    if (loadingState !== 'success' || !regularEpisodes.length) return;
+ useEffect(() => {
+  if (loadingState !== 'success' || !regularEpisodes.length) return;
 
-    // Language
-    const savedLang = getLanguage(anilistId);
-    setLang(savedLang);
+  // Language
+  const savedLang = getLanguage(anilistId);
+  setLang(savedLang);
 
-    // Watched
-    const watched = getWatchedEpisodes(anilistId);
-    setWatchedEpisodes(watched);
+  // Watched
+  const watched = getWatchedEpisodes(anilistId);
+  setWatchedEpisodes(watched);
 
-    // Episode priority: URL ?ep= > localStorage > ep 1
-    const urlEp = searchParams.get('ep');
-    const epNum = urlEp
-  ? parseInt(urlEp, 10)
-  : getCurrentEpisode(anilistId) ?? 1;
+  // Episode priority: URL ?ep= > localStorage > ep 1
+  const urlEp = searchParams.get('episode');
+  const savedEp = getCurrentEpisode(anilistId);
+  const targetNum = urlEp
+    ? parseInt(urlEp, 10)
+    : savedEp ?? 1;
 
-const epData = regularEpisodes.find((e) => Number(e.episode) === epNum);
+  // Find the episode data; fall back to ep 1 if the number isn't in the list
+  const epData =
+      regularEpisodes.find((e) => Number(e.episode) === targetNum) ??
+      regularEpisodes[0];
 
-const first = regularEpisodes[0];
-if (first) {
-  initEpisode(first, Number(first.episode), savedLang);
-}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingState, regularEpisodes.length]);
+    if (!epData) return;
+
+   const resolvedNum = Number(epData.episode);
+
+  // Sync URL — write ?ep= if it's missing or points to a nonexistent episode
+  if (!urlEp || Number(urlEp) !== resolvedNum) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('episode', String(resolvedNum));
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
+
+  initEpisode(epData, resolvedNum, savedLang);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [loadingState, regularEpisodes.length]);
 
   const initEpisode = useCallback(
     (ep: EpisodeData, num: number, lang: 'sub' | 'dub') => {

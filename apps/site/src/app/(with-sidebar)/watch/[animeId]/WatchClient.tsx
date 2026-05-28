@@ -20,6 +20,7 @@ import {
 
 
 import MusicBars from './PlayBars';
+import NextAiringBanner from './NextAirBanner';
 
 interface WatchClientProps {
   anilistId: string;
@@ -355,6 +356,8 @@ useEffect(() => {
   );
 }, [selectedServerId, servers]);
 
+
+
   return (
     <div className="min-h-screen bg-background text-foreground lg:px-2">
       {/* Top breadcrumb */}
@@ -421,9 +424,9 @@ useEffect(() => {
 
           {/* ── Right sidebar (desktop) ── */}
           <div
-  style={leftColHeight ? { height: `${leftColHeight}px` } : undefined}
-  className="flex flex-col gap-4 px-2 lg:px-0 lg:sticky lg:top-0 lg:min-h-0"
->
+              style={leftColHeight ? { height: `${leftColHeight}px` } : undefined}
+              className="flex flex-col gap-4 px-2 lg:px-0 lg:sticky lg:top-0 lg:min-h-0"
+            >
             {/* Server selector — natural height */}
             <div className="lg:shrink-0">
               <ServerSelector
@@ -438,8 +441,8 @@ useEffect(() => {
             </div>
 
             {/* Episode list — fills remaining height, scrolls internally */}
-            <div className="lg:flex-1 lg:min-h-0">
-              <div className="border border-zinc-800 bg-zinc-900/30 lg:h-full lg:overflow-y-auto">
+            <div className="lg:flex-1 lg:min-h-0 flex flex-col gap-2 relative">
+              <div className="border border-zinc-800 bg-zinc-900/30 lg:flex-1 lg:overflow-y-auto">
                 <EpisodeListWrapper
                   loadingState={loadingState}
                   fetchError={fetchError}
@@ -451,6 +454,9 @@ useEffect(() => {
                   noBorder
                 />
               </div>
+              {nextAirEpisode?.episode && nextAirEpisode?.airingAt && (
+                <NextAiringBanner nextAirEpisode={nextAirEpisode} />
+              )}
             </div>
           </div>
         </div>

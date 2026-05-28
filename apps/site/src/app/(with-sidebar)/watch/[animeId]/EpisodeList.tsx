@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { TvMinimal } from 'lucide-react';
 import { EpisodeData, nextAiringEpisode } from '@/types/watch';
 import {
@@ -28,22 +28,50 @@ export default function EpisodeList({
   nextAirEpisode,
 }: EpisodeListProps) {
   const regularEpisodes = useMemo(
-  () =>
-    episodes
-      .filter((ep) => {
-        if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
-        if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode) return false;
-        return true;
-      })
-      .sort((a, b) => Number(a.episode) - Number(b.episode)),
-  [episodes, nextAirEpisode]
-);  
+    () =>
+      episodes
+        .filter((ep) => {
+          if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
+          if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode)
+            return false;
+          return true;
+        })
+        .sort((a, b) => Number(a.episode) - Number(b.episode)),
+    [episodes, nextAirEpisode]
+  );
 
   const totalEps = regularEpisodes.length;
   const pageCount = Math.ceil(totalEps / PAGE_SIZE);
   const [page, setPage] = useState(0);
 
+  // Ref attached to whichever episode button is currently active so we can
+  // scroll it into view without touching the scroll container directly.
+  const activeEpRef = useRef<HTMLButtonElement>(null);
+
   const useCompact = totalEps > 30;
+
+  // ── Auto-jump to the page that contains the currently-playing episode ─────
+  // Runs on mount (handles reload) and whenever currentEpisode changes.
+  useEffect(() => {
+    if (currentEpisode == null || !regularEpisodes.length || totalEps <= PAGE_SIZE) return;
+
+    const idx = regularEpisodes.findIndex((e) => Number(e.episode) === currentEpisode);
+    if (idx === -1) return;
+
+    const targetPage = Math.floor(idx / PAGE_SIZE);
+    setPage((prev) => (prev === targetPage ? prev : targetPage));
+  }, [currentEpisode, regularEpisodes, totalEps]);
+
+  // ── Scroll the active episode button into view ────────────────────────────
+  // Triggers after both a page change and an episode change. The small timeout
+  // lets React flush the DOM update before we measure.
+  useEffect(() => {
+    if (!activeEpRef.current) return;
+    const id = setTimeout(() => {
+      activeEpRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 80);
+    return () => clearTimeout(id);
+  }, [currentEpisode, page]);
 
   const pageEpisodes = useMemo(() => {
     if (totalEps <= 100) return regularEpisodes;
@@ -61,35 +89,29 @@ export default function EpisodeList({
   if (!totalEps) {
     return (
       <div className="flex items-center justify-center py-8">
-        <p className="text-xs uppercase tracking-widest text-zinc-600">
-          No episodes found
-        </p>
+        <p className="text-xs uppercase tracking-widest text-zinc-600">No episodes found</p>
       </div>
     );
   }
 
   return (
-    
     <div>
-      <div className="flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between ">
+      {/* ── Header ── */}
+      <div className="flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between">
         <span className="flex items-center gap-3 text-[13px] uppercase tracking-[0.22em] font-bold text-zinc-500">
           <TvMinimal className="w-4 h-4 text-zinc-500" />
           Episodes
         </span>
 
         {totalEps > 100 && (
-          <div className="">
+          <div>
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <div
                   className="flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-zinc-900 text-xs tracking-widest text-zinc-300 font-bold hover:border-zinc-500 transition-colors w-full"
                   aria-label="Select episode page"
                 >
-                  <svg
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="w-3 h-3 text-zinc-500"
-                  >
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-zinc-500">
                     <path
                       fillRule="evenodd"
                       d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -121,79 +143,85 @@ export default function EpisodeList({
           </div>
         )}
       </div>
-      <div 
-      className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto"
-      >
-      {!useCompact ? (
-        <div className="flex flex-col gap-0" role="listbox" aria-label="Episode list">
-          {pageEpisodes.map((ep) => {
-            const num = Number(ep.episode);
-            const isActive = currentEpisode === num;
-            const isWatched = watchedEpisodes.includes(num);
-            const epTitle = ep.title?.en ?? ep.nameTvdb ?? `Episode ${num}`;
 
-            return (
-              <button
-                key={ep.episode}
-                role="option"
-                aria-selected={isActive}
-                aria-label={`Episode ${num}: ${epTitle}${isWatched ? ' (watched)' : ''}`}
-                onClick={() => onEpisodeSelect(ep, num)}
-                className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors ${
-                  isActive
-                    ? 'bg-primary/10 border-l-2 border-l-primary text-foreground pl-2.5'
-                    : isWatched
-                    ? 'opacity-50 hover:opacity-80 hover:bg-zinc-800/40'
-                    : 'hover:bg-zinc-800/40'
-                }`}
-              >
-                <span
-                  className={`text-[13px] font-black tabular-nums w-6 shrink-0 ${
-                    isActive ? 'text-primary' : 'text-zinc-600'
+      {/* ── Episode list ── */}
+      <div className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto">
+        {!useCompact ? (
+          /* ── Full list (≤ 30 episodes) ── */
+          <div className="flex flex-col gap-0" role="listbox" aria-label="Episode list">
+            {pageEpisodes.map((ep) => {
+              const num = Number(ep.episode);
+              const isActive = currentEpisode === num;
+              const isWatched = watchedEpisodes.includes(num);
+              const epTitle = ep.title?.en ?? ep.nameTvdb ?? `Episode ${num}`;
+
+              return (
+                <button
+                  key={ep.episode}
+                  ref={isActive ? activeEpRef : undefined}
+                  role="option"
+                  aria-selected={isActive}
+                  aria-label={`Episode ${num}: ${epTitle}${isWatched ? ' (watched)' : ''}`}
+                  onClick={() => onEpisodeSelect(ep, num)}
+                  className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors ${
+                    isActive
+                      ? 'bg-primary/10 border-l-2 border-l-primary text-foreground pl-2.5'
+                      : isWatched
+                      ? 'opacity-50 hover:opacity-80 hover:bg-zinc-800/40'
+                      : 'hover:bg-zinc-800/40'
+                  }`}
+                >
+                  <span
+                    className={`text-[13px] font-black tabular-nums w-6 shrink-0 ${
+                      isActive ? 'text-primary' : 'text-zinc-600'
+                    }`}
+                  >
+                    {num}
+                  </span>
+                  <span className="text-[13px] text-zinc-300 font-medium truncate leading-snug">
+                    {epTitle}
+                  </span>
+                  {isActive && <span className="ml-auto shrink-0 w-1.5 h-1.5 bg-primary" />}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          /* ── Compact grid (> 30 episodes) ── */
+          <div
+            className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-5 gap-1"
+            role="listbox"
+            aria-label="Episode list"
+          >
+            {pageEpisodes.map((ep) => {
+              const num = Number(ep.episode);
+              const isActive = currentEpisode === num;
+              const isWatched = watchedEpisodes.includes(num);
+              const epTitle = ep.title?.en ?? ep.nameTvdb ?? `Episode ${num}`;
+
+              return (
+                <button
+                  key={ep.episode}
+                  ref={isActive ? activeEpRef : undefined}
+                  role="option"
+                  aria-selected={isActive}
+                  aria-label={`Episode ${num}${epTitle ? `: ${epTitle}` : ''}${isWatched ? ' (watched)' : ''}`}
+                  title={epTitle}
+                  onClick={() => onEpisodeSelect(ep, num)}
+                  className={`px-5 py-1.5 text-[13px] font-bold border transition-colors ${
+                    isActive
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : isWatched
+                      ? 'border-zinc-800 bg-zinc-900/30 text-zinc-600 opacity-50 hover:opacity-75'
+                      : 'border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
                   }`}
                 >
                   {num}
-                </span>
-                <span className="text-[13px] text-zinc-300 font-medium truncate leading-snug">
-                  {epTitle}
-                </span>
-                {isActive && (
-                  <span className="ml-auto shrink-0 w-1.5 h-1.5 bg-primary" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-5 gap-1" role="listbox" aria-label="Episode list">
-          {pageEpisodes.map((ep) => {
-            const num = Number(ep.episode);
-            const isActive = currentEpisode === num;
-            const isWatched = watchedEpisodes.includes(num);
-            const epTitle = ep.title?.en ?? ep.nameTvdb ?? `Episode ${num}`;
-
-            return (
-              <button
-                key={ep.episode}
-                role="option"
-                aria-selected={isActive}
-                aria-label={`Episode ${num}${epTitle ? `: ${epTitle}` : ''}${isWatched ? ' (watched)' : ''}`}
-                title={epTitle}
-                onClick={() => onEpisodeSelect(ep, num)}
-                className={`px-5 py-1.5 text-[13px] font-bold border transition-colors ${
-                  isActive
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : isWatched
-                    ? 'border-zinc-800 bg-zinc-900/30 text-zinc-600 opacity-50 hover:opacity-75'
-                    : 'border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
-                }`}
-              >
-                {num}
-              </button>
-            );
-          })}
-        </div>
-      )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

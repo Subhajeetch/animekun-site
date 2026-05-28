@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { TvMinimal } from 'lucide-react';
-import { EpisodeData } from '@/types/watch';
+import { EpisodeData, nextAiringEpisode } from '@/types/watch';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +15,7 @@ interface EpisodeListProps {
   currentEpisode: number | null;
   watchedEpisodes: number[];
   onEpisodeSelect: (ep: EpisodeData, num: number) => void;
-  nextAirEpisode?: number;
-  comHeight?: number | null;
-  isLg?: boolean;
+  nextAirEpisode?: nextAiringEpisode | null;
 }
 
 const PAGE_SIZE = 100;
@@ -28,15 +26,13 @@ export default function EpisodeList({
   watchedEpisodes,
   onEpisodeSelect,
   nextAirEpisode,
-  comHeight,
-  isLg
 }: EpisodeListProps) {
   const regularEpisodes = useMemo(
   () =>
     episodes
       .filter((ep) => {
         if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
-        if (nextAirEpisode !== undefined && Number(ep.episode) >= nextAirEpisode) return false;
+        if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode) return false;
         return true;
       })
       .sort((a, b) => Number(a.episode) - Number(b.episode)),
@@ -143,7 +139,7 @@ export default function EpisodeList({
                 aria-selected={isActive}
                 aria-label={`Episode ${num}: ${epTitle}${isWatched ? ' (watched)' : ''}`}
                 onClick={() => onEpisodeSelect(ep, num)}
-                className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors last:border-b-0 ${
+                className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors ${
                   isActive
                     ? 'bg-primary/10 border-l-2 border-l-primary text-foreground pl-2.5'
                     : isWatched

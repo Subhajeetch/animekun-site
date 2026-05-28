@@ -60,7 +60,7 @@ export default async function WatchPage({
       animeBanner={anime.bannerImage ?? undefined}
       animeSlug={animeId}
       malId={anime.idMal ?? undefined}
-      nextAirEpisode={anime.nextAiringEpisode?.episode ?? undefined}
+      nextAirEpisode={anime.nextAiringEpisode ?? undefined}
     />
   );
 }

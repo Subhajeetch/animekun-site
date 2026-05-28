@@ -221,7 +221,7 @@ export default function VideoPlayer({
             }
             disabled={prevEp?.episodeNumber == null}
             aria-label="Previous episode"
-            className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 border text-xs uppercase tracking-widest font-bold text-foreground/60 hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
               <path fillRule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
@@ -232,9 +232,9 @@ export default function VideoPlayer({
           <button
             onClick={() => setSettingsOpen(true)}
             aria-label="Player settings"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] uppercase tracking-widest font-bold border border-zinc-700 text-zinc-500 hover:border-zinc-500 hover:text-zinc-300 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs uppercase tracking-widest font-bold border text-foreground/60 hover:border-primary hover:text-primary transition-colors"
           >
-            <Settings size={12} />
+            <Settings size={14} />
             Settings
           </button>
 
@@ -245,7 +245,7 @@ export default function VideoPlayer({
             }
             disabled={nextEp?.episodeNumber == null}
             aria-label="Next episode"
-            className="flex items-center gap-2 px-4 py-2 border border-zinc-800 text-xs uppercase tracking-widest font-bold text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
+            className="flex items-center gap-2 px-4 py-2 border text-xs uppercase tracking-widest font-bold text-foreground/60 hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
           >
             Next
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -373,6 +373,7 @@ export default function VideoPlayer({
             <SettingRow
               label="Autoplay next episode"
               description="Advance to the next episode automatically when this one ends"
+              hint="Might not work for some servers (can't retrieve data)"
               active={autoplayNext}
               onToggle={handleAutoplayNextToggle}
             />

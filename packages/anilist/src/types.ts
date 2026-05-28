@@ -232,7 +232,7 @@ export interface AiringEpisode {
   /** Unix timestamp in seconds */
   airingAt: number;
   /** Convenience: airingAt converted to a JS Date object */
-  airingAtDate: Date;
+  airingAtDate: string;
   /** Seconds until air. Negative means it has already aired. */
   timeUntilAiring: number;
   hasAired: boolean;

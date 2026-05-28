@@ -6,7 +6,7 @@ import Link from 'next/link';
 import VideoPlayer from './VideoPlayer';
 import ServerSelector from './ServerSelector';
 import EpisodeList from './EpisodeList';
-import { EpisodeData, AnimeEpisodesResponse, Server } from '@/types/watch';
+import { EpisodeData, AnimeEpisodesResponse, Server, nextAiringEpisode } from '@/types/watch';
 import { getServers } from '@/utils/getServers';
 import {
   getWatchedEpisodes,
@@ -30,7 +30,7 @@ interface WatchClientProps {
   malId?: number;
   tmdbId?: number;
   tmdbSeason?: number;
-  nextAirEpisode?: number
+  nextAirEpisode?: nextAiringEpisode | null;
 }
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -92,9 +92,13 @@ useEffect(() => {
   const regularEpisodes = useMemo(() => {
   if (!episodesData?.episodes) return [];
   return Object.values(episodesData.episodes)
-    .filter((ep) => ep.type === 'Regular Episode' && !isNaN(Number(ep.episode)))
+    .filter((ep) => {
+      if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
+      if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode) return false;
+      return true;
+    })
     .sort((a, b) => Number(a.episode) - Number(b.episode));
-}, [episodesData]);
+}, [episodesData, nextAirEpisode]);  // ← add nextAirEpisode to deps
 
   const mappings = episodesData?.mappings;
   const resolvedMalId = malId ?? mappings?.mal_id;
@@ -464,7 +468,7 @@ interface EpisodeListWrapperProps {
   currentEpisode: number | null;
   watchedEpisodes: number[];
   onEpisodeSelect: (ep: EpisodeData, num: number) => void;
-  nextAirEpisode?: number;
+  nextAirEpisode?: nextAiringEpisode | null
   noBorder?: boolean;
 }
 
@@ -476,6 +480,7 @@ function EpisodeListWrapper({
   watchedEpisodes,
   onEpisodeSelect,
   noBorder,
+  nextAirEpisode,
 }: EpisodeListWrapperProps) {
   if (loadingState === 'loading') {
     return (
@@ -531,6 +536,7 @@ function EpisodeListWrapper({
         currentEpisode={currentEpisode}
         watchedEpisodes={watchedEpisodes}
         onEpisodeSelect={onEpisodeSelect}
+        nextAirEpisode={nextAirEpisode}
       />
     </div>
   );

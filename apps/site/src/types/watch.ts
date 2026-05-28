@@ -81,3 +81,13 @@ export interface Server {
   category: 'anilist' | 'mal' | 'tmdb';
   normalizer?: ServerNormalizer; // ← new
 }
+
+
+export interface nextAiringEpisode {
+  id?: number,
+  episode?: number,
+  airingAt?: number,
+  airingAtDate?: string,
+  timeUntilAiring?: number,
+  hasAired?: boolean
+}

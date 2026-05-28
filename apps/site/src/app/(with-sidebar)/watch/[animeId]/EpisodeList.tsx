@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { TvMinimal } from 'lucide-react';
-import { EpisodeData, nextAiringEpisode } from '@/types/watch';
+import { EpisodeData } from '@/types/watch';
+import type { AiringEpisode } from "@repo/anilist";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,7 @@ interface EpisodeListProps {
   currentEpisode: number | null;
   watchedEpisodes: number[];
   onEpisodeSelect: (ep: EpisodeData, num: number) => void;
-  nextAirEpisode?: nextAiringEpisode | null;
+  nextAirEpisode?: AiringEpisode | null;
 }
 
 const PAGE_SIZE = 100;

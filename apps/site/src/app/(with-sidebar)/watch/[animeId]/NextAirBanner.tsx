@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, Clock } from 'lucide-react';
-import { nextAiringEpisode } from '@/types/watch';
+import type { AiringEpisode } from "@repo/anilist";
 
 interface NextAiringBannerProps {
-  nextAirEpisode: nextAiringEpisode;
+  nextAirEpisode: AiringEpisode;
 }
 
 // ── Countdown helpers ─────────────────────────────────────────────────────────
@@ -32,15 +32,15 @@ function formatCountdown(totalSeconds: number): string {
   return parts.join(' ');
 }
 
-function formatAirDate(airingAtDate: string): string {
+function formatAirDate(airingAtDate: Date): string {
   try {
-    return new Date(airingAtDate).toLocaleDateString('en-US', {
+    return airingAtDate.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
   } catch {
-    return airingAtDate;
+    return 'Unknown date';
   }
 }
 

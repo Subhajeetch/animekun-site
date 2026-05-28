@@ -11,6 +11,8 @@ import Link from "next/link";
 
 import { searchAnimes } from "@/utils/search-animes";
 
+import config from "@/mine.config"
+
 
 
 interface SearchResult {
@@ -26,7 +28,7 @@ interface SearchResult {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const TRENDING = ["Attack on Titan", "Demon Slayer", "Your Name", "Jujutsu Kaisen"];
+const TRENDING = config.TRENDING;
 
 // ─── Mapper: AnimeResult → SearchResult ──────────────────────────────────────
 

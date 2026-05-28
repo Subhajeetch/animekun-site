@@ -6,7 +6,8 @@ import Link from 'next/link';
 import VideoPlayer from './VideoPlayer';
 import ServerSelector from './ServerSelector';
 import EpisodeList from './EpisodeList';
-import { EpisodeData, AnimeEpisodesResponse, Server, nextAiringEpisode } from '@/types/watch';
+import { EpisodeData, AnimeEpisodesResponse, Server } from '@/types/watch';
+import type { AiringEpisode } from "@repo/anilist";
 import { getServers } from '@/utils/getServers';
 import {
   getWatchedEpisodes,
@@ -31,7 +32,7 @@ interface WatchClientProps {
   malId?: number;
   tmdbId?: number;
   tmdbSeason?: number;
-  nextAirEpisode?: nextAiringEpisode | null;
+  nextAirEpisode?: AiringEpisode | null;
 }
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -474,7 +475,7 @@ interface EpisodeListWrapperProps {
   currentEpisode: number | null;
   watchedEpisodes: number[];
   onEpisodeSelect: (ep: EpisodeData, num: number) => void;
-  nextAirEpisode?: nextAiringEpisode | null
+  nextAirEpisode?: AiringEpisode | null
   noBorder?: boolean;
 }
 

@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { LoaderCircle, Settings } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { LoaderCircle, Settings, X } from 'lucide-react';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Server } from '@/types/watch';
+
+import CustomImage from "@/components/custom-image"
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -255,11 +257,20 @@ export default function VideoPlayer({
 
       {/* ── Settings dialog ── */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="p-0 gap-0 max-w-xl w-full border border-zinc-700/80 bg-zinc-900 shadow-2xl overflow-hidden rounded-none [&>button]:hidden">
-          <DialogTitle className="sr-only">Player Settings</DialogTitle>
+        <DialogContent className="p-0 gap-0 max-w-xl w-full border bg-background shadow-2xl overflow-hidden rounded-none [&>button]:hidden">
+          
 
           {/* Now Playing card */}
           <div className="relative overflow-hidden">
+
+
+            <DialogClose className="absolute top-2 right-2 z-10 text-muted-foreground/50 rounded-none hover:text-primary hover:border-primary transition-colors shrink-0 bg-transparent h-7 w-7 flex items-center justify-center border">
+              <X size={16} />
+            </DialogClose>
+          <DialogTitle className="sr-only">Player Settings</DialogTitle>
+
+
+
             {/* Blurred cover background */}
             {animeCover ? (
               <div
@@ -280,14 +291,16 @@ export default function VideoPlayer({
             <div className="relative flex gap-3.5 p-4">
               {/* Cover image */}
               {animeCover ? (
-                <img
+                <CustomImage
+                  width={72}
+                  height={96}
                   src={animeCover}
                   alt={title ?? 'Anime cover'}
-                  className="w-18 h-24 object-cover shrink-0 border border-white/10 shadow-lg"
+                  className="w-18 h-24 object-cover shrink-0 border-white/10 shadow-lg border-2"
                 />
               ) : (
-                <div className="w-18 h-24 bg-zinc-700 shrink-0 flex items-center justify-center border border-white/10">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-zinc-500">
+                <div className="w-18 h-24 bg-muted shrink-0 flex items-center justify-center border">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-foreground/80">
                     <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                   </svg>
                 </div>
@@ -317,24 +330,24 @@ export default function VideoPlayer({
                   <div className="mt-3">
                   {progress ? (
                     <>
-                      <div className="w-full h-[3px] bg-zinc-700/80 rounded-full overflow-hidden">
+                      <div className="w-full h-0.75 bg-muted overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-700 ease-out"
+                          className="h-full bg-primary transition-all duration-700 ease-out"
                           style={{ width: `${Math.min(Math.max(progress.percent, 0), 100)}%` }}
                         />
                       </div>
                       <div className="flex justify-between mt-1.5">
-                        <span className="text-[9px] tabular-nums text-zinc-500">
+                        <span className="text-[10px] tabular-nums text-foreground/80">
                           {formatTime(progress.currentTime)}
                         </span>
-                        <span className="text-[9px] tabular-nums text-zinc-600">
+                        <span className="text-[10px] tabular-nums text-foreground/80">
                           {progress.duration > 0 ? formatTime(progress.duration) : '--:--'}
                         </span>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="w-full h-[3px] bg-zinc-700/60 rounded-full overflow-hidden">
+                      <div className="w-full h-0.75 bg-zinc-700/60 rounded-full overflow-hidden">
                         <div className="h-full w-1/3 bg-zinc-600/40 rounded-full animate-pulse" />
                       </div>
                       <p className="text-[9px] text-zinc-600 mt-1.5 uppercase tracking-widest">
@@ -352,9 +365,9 @@ export default function VideoPlayer({
           </div>
 
           {/* Settings section */}
-          <div className="px-4 pt-3 pb-4 border-t border-zinc-800 space-y-0.5">
-            <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-600 font-bold mb-2">
-              Playback
+          <div className="px-4 pt-3 pb-4 border-t space-y-0.5">
+            <p className="text-[9px] uppercase tracking-[0.15em] text-primary font-bold mb-2">
+              Player Settings
             </p>
 
             <SettingRow
@@ -366,8 +379,8 @@ export default function VideoPlayer({
 
             <SettingRow
               label="Video autoplay"
-              description="Start playing automatically when you load or switch episodes"
-              hint="Takes effect on the next episode load"
+              description="Start playing video automatically when you load or switch episodes"
+              hint="Might not work for some servers"
               active={videoAutoplay}
               onToggle={handleVideoAutoplayToggle}
             />
@@ -394,16 +407,16 @@ function SettingRow({
   onToggle: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-2.5 border-b border-zinc-800/60 last:border-0">
+    <div className="flex items-center justify-between gap-4 py-2.5 border-b last:border-0">
       <div className="flex flex-col min-w-0">
-        <span className="text-[12px] font-bold text-zinc-300 uppercase tracking-wide leading-tight">
+        <span className="text-[14px] font-bold text-foreground/80 uppercase tracking-wide leading-tight">
           {label}
         </span>
         {description && (
-          <span className="text-[10px] text-zinc-600 mt-0.5 leading-snug">{description}</span>
+          <span className="text-[11px] text-foreground/20 mt-0.5 leading-snug">{description}</span>
         )}
         {hint && (
-          <span className="text-[9px] text-zinc-700 mt-0.5 italic leading-snug">{hint}</span>
+          <span className="text-[10px] text-foreground/15 mt-0.5 italic leading-snug">- {hint}</span>
         )}
       </div>
 
@@ -413,12 +426,12 @@ function SettingRow({
         role="switch"
         aria-checked={active}
         aria-label={label}
-        className={`relative shrink-0 w-9 h-5 rounded-full transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${
-          active ? 'bg-primary' : 'bg-zinc-700 hover:bg-zinc-600'
+        className={`relative cursor-pointer shrink-0 w-9 h-5 rounded-full transition-colors duration-200 focus-visible:outline focus-visible:outline-primary ${
+          active ? 'bg-primary' : 'bg-muted'
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 w-4 h-4 bg-foreground/80 shadow-sm transition-transform duration-200 ${
             active ? 'translate-x-4' : 'translate-x-0'
           }`}
         />

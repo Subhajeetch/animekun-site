@@ -22,6 +22,7 @@ import {
 
 import MusicBars from './PlayBars';
 import NextAiringBanner from './NextAirBanner';
+import { LoaderCircle, House, ChevronRight } from 'lucide-react';
 
 interface WatchClientProps {
   anilistId: string;
@@ -67,25 +68,37 @@ export default function WatchClient({
 
 
 const leftColRef = useRef<HTMLDivElement>(null);
-const [leftColHeight, setLeftColHeight] = useState<number>(0);
+const [leftColHeight, setLeftColHeight] = useState<number | null>(null);
 
 useEffect(() => {
+  const lgQuery = window.matchMedia("(min-width: 1024px)");
+
   const updateHeight = () => {
+    if (!lgQuery.matches) {
+      setLeftColHeight(null);
+      return;
+    }
+
     if (leftColRef.current) {
       setLeftColHeight(leftColRef.current.offsetHeight);
     }
   };
 
-  updateHeight(); // initial read
+  updateHeight();
 
-  const observer = new ResizeObserver(updateHeight); // catches accordion/server expand
-  if (leftColRef.current) observer.observe(leftColRef.current);
+  const observer = new ResizeObserver(updateHeight);
 
-  window.addEventListener('resize', updateHeight); // catches window resize
+  if (leftColRef.current) {
+    observer.observe(leftColRef.current);
+  }
+
+  lgQuery.addEventListener("change", updateHeight);
+  window.addEventListener("resize", updateHeight);
 
   return () => {
     observer.disconnect();
-    window.removeEventListener('resize', updateHeight);
+    lgQuery.removeEventListener("change", updateHeight);
+    window.removeEventListener("resize", updateHeight);
   };
 }, []);
 
@@ -334,11 +347,14 @@ useEffect(() => {
 
   // ── Navigate prev/next episode ────────────────────────────────────────────
   const currentIndex = regularEpisodes.findIndex(
-    (e) => e.episodeNumber === currentEpisode
+    (e) => Number(e.episode) === currentEpisode
   );
-  const prevEp = currentIndex > 0 ? regularEpisodes[currentIndex - 1] : null;
+
+  const prevEp =
+    currentIndex > 0 ? regularEpisodes[currentIndex - 1] : null;
+
   const nextEp =
-    currentIndex < regularEpisodes.length - 1
+    currentIndex >= 0 && currentIndex < regularEpisodes.length - 1
       ? regularEpisodes[currentIndex + 1]
       : null;
 
@@ -360,27 +376,27 @@ useEffect(() => {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:px-2">
+    <div className="lg:px-2">
       {/* Top breadcrumb */}
       <div className=" pt-4 pb-2 px-1 hidden lg:block">
         <nav aria-label="Breadcrumb">
-          <ol className="flex items-center gap-2 text-[12px] uppercase tracking-widest text-zinc-600">
+          <ol className="flex items-center gap-2 text-[12px] uppercase tracking-widest text-foreground/50">
             <li>
-              <Link href="/" className="hover:text-zinc-400 transition-colors">
-                Home
+              <Link href="/home" className="hover:text-primary transition-colors">
+                <House size={16} />
               </Link>
             </li>
-            <li aria-hidden>/</li>
+            <li aria-hidden><ChevronRight size={16} /></li>
             <li>
               <Link
                 href={`/anime/${animeSlug}`}
-                className="hover:text-zinc-400 transition-colors truncate"
+                className="hover:text-primary transition-colors truncate"
               >
                 {animeTitle}
               </Link>
             </li>
-            <li aria-hidden>/</li>
-            <li className="text-zinc-400 truncate" aria-current="page">
+            <li aria-hidden><ChevronRight size={16} /></li>
+            <li className="text-foreground/80 truncate" aria-current="page">
               {epTitle ?? 'Watch'}
             </li>
           </ol>
@@ -388,7 +404,7 @@ useEffect(() => {
       </div>
 
       {/* Main layout */}
-      <div className=" pb-10">
+      <div className="mb-4">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-4 xl:gap-5 lg:items-stretch">
           {/* ── Left: Player + Episode Info ── */}
           <div ref={leftColRef} className="flex flex-col lg:self-start w-full">
@@ -492,29 +508,12 @@ function EpisodeListWrapper({
   if (loadingState === 'loading') {
     return (
       <div
-        className={`flex items-center justify-center py-10 ${
-          noBorder ? '' : 'border border-zinc-800 bg-zinc-900/30'
+        className={`flex gap-2 items-center justify-center py-10 ${
+          noBorder ? '' : 'border'
         }`}
       >
-        <svg
-          className="w-5 h-5 animate-spin text-zinc-600"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8H4z"
-          />
-        </svg>
+        <LoaderCircle size={24} className="animate-spin" />
+        <p>Please wait...</p>
       </div>
     );
   }

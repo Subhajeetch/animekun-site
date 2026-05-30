@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { LoaderCircle, Settings, X } from 'lucide-react';
+import { LoaderCircle, Settings, X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Server } from '@/types/watch';
 
@@ -37,6 +37,11 @@ function formatTime(secs: number): string {
   const m = Math.floor(secs / 60);
   const s = Math.floor(secs % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function getEpisodeNum(ep: any): number | null {
+  const num = Number(ep?.episode ?? ep?.episodeNumber);
+  return Number.isFinite(num) ? num : null;
 }
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -137,11 +142,12 @@ export default function VideoPlayer({
       if (!playerEvent) return;
 
       if (playerEvent.type === 'complete') {
-        if (autoplayNext && nextEp?.episodeNumber != null) {
-          handleEpisodeSelect?.(nextEp, nextEp.episodeNumber);
+        const nextEpNum = getEpisodeNum(nextEp);
+
+        if (autoplayNext && nextEp && nextEpNum != null) {
+          handleEpisodeSelect?.(nextEp, nextEpNum);
         }
       }
-
       if (playerEvent.type === 'progress') {
         const { currentTime, duration } = playerEvent;
         const percent =
@@ -170,13 +176,17 @@ export default function VideoPlayer({
     writeAutoplayNext(next);
   };
 
+
+  const prevEpNum = getEpisodeNum(prevEp);
+  const nextEpNum = getEpisodeNum(nextEp);
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <>
       <div className="w-full flex flex-col gap-0">
         {/* ── Player ── */}
         <div
-          className="relative w-full bg-black border border-zinc-800"
+          className="relative w-full bg-black border bg-linear-to-b from-transparent via-primary/50 to-transparent"
           style={{ aspectRatio: '16/9' }}
           aria-label={`Video player${title ? ` — ${title}` : ''}`}
         >
@@ -189,9 +199,8 @@ export default function VideoPlayer({
             </div>
           ) : iframeSrc ? (
             <iframe
-              key={iframeSrc}
               src={iframeSrc}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full bg-black"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
@@ -213,19 +222,17 @@ export default function VideoPlayer({
         </div>
 
         {/* ── Controls bar ── */}
-        <div className="flex items-center gap-3 px-3 py-2 bg-zinc-900/80 border border-t-0 border-zinc-800">
+        <div className="flex items-center gap-3 px-3 py-2 bg-primary/2 border border-t-0">
           <button
-            onClick={() =>
-              prevEp?.episodeNumber != null &&
-              handleEpisodeSelect?.(prevEp, prevEp.episodeNumber)
+           onClick={() =>
+              prevEp && prevEpNum != null &&
+              handleEpisodeSelect?.(prevEp, prevEpNum)
             }
-            disabled={prevEp?.episodeNumber == null}
+            disabled={prevEpNum == null}
             aria-label="Previous episode"
             className="flex items-center gap-2 px-4 py-2 border text-xs uppercase tracking-widest font-bold text-foreground/60 hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-              <path fillRule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
-            </svg>
+            <ChevronLeft size={14} />
             Prev
           </button>
 
@@ -240,17 +247,15 @@ export default function VideoPlayer({
 
           <button
             onClick={() =>
-              nextEp?.episodeNumber != null &&
-              handleEpisodeSelect?.(nextEp, nextEp.episodeNumber)
+              nextEp && nextEpNum != null &&
+              handleEpisodeSelect?.(nextEp, nextEpNum)
             }
-            disabled={nextEp?.episodeNumber == null}
+            disabled={nextEpNum == null}
             aria-label="Next episode"
             className="flex items-center gap-2 px-4 py-2 border text-xs uppercase tracking-widest font-bold text-foreground/60 hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed ml-auto"
           >
             Next
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-              <path fillRule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-            </svg>
+            <ChevronRight size={14} />
           </button>
         </div>
       </div>

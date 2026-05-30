@@ -32,16 +32,28 @@ function formatCountdown(totalSeconds: number): string {
   return parts.join(' ');
 }
 
-function formatAirDate(airingAtDate: Date): string {
-  try {
-    return airingAtDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
+const airDateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hourCycle: 'h12',
+});
+
+export function formatAirDate(airingAtDate: string | Date | number): string {
+  if (!airingAtDate) {
     return 'Unknown date';
   }
+
+  const date = airingAtDate instanceof Date ? airingAtDate : new Date(airingAtDate);
+
+  // Faster validation check than Number.isNaN(date.getTime())
+  if (isNaN(date.getTime())) {
+    return 'Unknown date';
+  }
+
+  return airDateFormatter.format(date);
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -111,7 +123,7 @@ export default function NextAiringBanner({ nextAirEpisode }: NextAiringBannerPro
                 <span className="font-bold text-foreground/90">{episode}</span>
                 {airingAtDate && (
                 <span>
-                  airing at {formatAirDate(airingAtDate)}
+                  airing on {formatAirDate(airingAtDate)}
                 </span>
               )}
               </div>

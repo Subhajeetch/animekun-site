@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import AnimeSequence from "./AnimeSequence";
+import AnimeSequence from "@/components/AnimeSequence";
 import AnimeCast from "./AnimeCast";
 import AnimeExternalLinks from "./AnimeExternalLinks";
 import CustomImage from "@/components/custom-image";

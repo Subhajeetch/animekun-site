@@ -75,8 +75,8 @@ export default function AnimeSequence({ relations, currentId }: Props) {
               flex items-start gap-3 p-3 border transition-colors group
               ${
                 isActive
-                  ? "border-zinc-500 bg-zinc-800/80"
-                  : "border-zinc-800/60 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-800/60"
+                  ? "border-primary bg-primary/10"
+                  : "hover:border-primary hover:bg-primary/10"
               }
             `}
           >

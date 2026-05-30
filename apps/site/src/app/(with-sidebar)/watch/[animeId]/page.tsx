@@ -6,6 +6,7 @@ import {
  } from "@repo/anilist";
 import { notFound } from "next/navigation";
 import WatchClient from "./WatchClient";
+import AnimeDetailsComponent from "./AnimeDetails";
 
 const { extractIdFromSlug } = anilist;
 
@@ -48,6 +49,7 @@ export default async function WatchPage({
     anime.title.english ?? anime.title.romaji ?? anime.title.native ?? "Unknown Anime";
 
   return (
+  <>
     <WatchClient
       anilistId={String(id)}
       animeTitle={displayTitle}
@@ -62,5 +64,8 @@ export default async function WatchPage({
       malId={anime.idMal ?? undefined}
       nextAirEpisode={anime.nextAiringEpisode ?? undefined}
     />
-  );
+
+    <AnimeDetailsComponent anime={anime} displayTitle={displayTitle} />
+  </>
+);
 }

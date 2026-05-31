@@ -357,7 +357,7 @@ export interface AiringEpisode {
   /** Unix timestamp in seconds */
   airingAt: number;
   /** Convenience: airingAt converted to a JS Date object */
-  airingAtDate: string;
+  airingAtDate: Date;
   /** Seconds until air. Negative means it has already aired. */
   timeUntilAiring: number;
   hasAired: boolean;

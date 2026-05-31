@@ -48,20 +48,30 @@ export default function EpisodeList({
   // Ref attached to whichever episode button is currently active so we can
   // scroll it into view without touching the scroll container directly.
   const activeEpRef = useRef<HTMLButtonElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const useCompact = totalEps > 30;
 
   // ── Auto-jump to the page that contains the currently-playing episode ─────
   // Runs on mount (handles reload) and whenever currentEpisode changes.
   useEffect(() => {
-    if (currentEpisode == null || !regularEpisodes.length || totalEps <= PAGE_SIZE) return;
+    if (!activeEpRef.current || !scrollContainerRef.current) return;
 
-    const idx = regularEpisodes.findIndex((e) => Number(e.episode) === currentEpisode);
-    if (idx === -1) return;
+    const id = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      const button = activeEpRef.current;
+      if (!container || !button) return;
 
-    const targetPage = Math.floor(idx / PAGE_SIZE);
-    setPage((prev) => (prev === targetPage ? prev : targetPage));
-  }, [currentEpisode, regularEpisodes, totalEps]);
+      const containerTop = container.getBoundingClientRect().top;
+      const buttonTop = button.getBoundingClientRect().top;
+      const offset = buttonTop - containerTop;
+      const center = offset - container.clientHeight / 2 + button.offsetHeight / 2;
+
+      container.scrollTo({ top: container.scrollTop + center, behavior: 'smooth' });
+    }, 80);
+
+    return () => clearTimeout(id);
+  }, [currentEpisode, page]);
 
   // ── Scroll the active episode button into view ────────────────────────────
   // Triggers after both a page change and an episode change. The small timeout
@@ -146,7 +156,7 @@ export default function EpisodeList({
       </div>
 
       {/* ── Episode list ── */}
-      <div className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto">
+      <div ref={scrollContainerRef} className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto">
         {!useCompact ? (
           /* ── Full list (≤ 30 episodes) ── */
           <div className="flex flex-col gap-0" role="listbox" aria-label="Episode list">

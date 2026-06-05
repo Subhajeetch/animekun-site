@@ -1,5 +1,6 @@
 //anilist
-import anilist from "./paths/anilist/get-anime-detail.js";
+import getAnimeDetail from "./paths/anilist/get-anime-detail.js";
+import homepage from "./paths/anilist/get-homepage.js";
 
 
-export { anilist };
+export { getAnimeDetail, homepage };

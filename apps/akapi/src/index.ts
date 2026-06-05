@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 // routes import
-import { anilist } from "./routes/index.js";
+import { getAnimeDetail, homepage } from "./routes/index.js";
 
 
 const app = new Hono<{}>();
@@ -20,6 +20,7 @@ app.get("/api/health", () => {
 });
 
 //routes
-app.route("/api/anilist/", anilist);
+app.route("/api/anilist/", getAnimeDetail);
+app.route("/api/anilist/", homepage);
 
 export default app;

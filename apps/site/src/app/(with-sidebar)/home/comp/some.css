@@ -1,0 +1,39 @@
+.animekun-hero-splide .splide__pagination {
+    justify-content: flex-end;
+    bottom: 16px;
+    padding-right: 24px;
+    z-index: 10;
+}
+
+@media (min-width: 680px) {
+    .animekun-hero-splide .splide__pagination {
+        padding-right: 4px;
+    }
+}
+
+.animekun-hero-splide .splide__arrows {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+
+.animekun-hero-splide .splide__arrow {
+    position: static;
+    border-radius: 0;
+    background-color: var(--color-primary);
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+}
+
+@media (max-width: 680px) {
+    .animekun-hero-splide .splide__arrows {
+        display: none;
+    }
+}

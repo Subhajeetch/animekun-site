@@ -17,18 +17,19 @@ const TAB_CONFIG = [
 
 export default function TopByTimeTabs({ items }: TopByTimeTabsProps) {
   return (
-    <section className="px-4 py-6 md:px-10 lg:px-16" aria-labelledby="top-by-time-heading">
+    <section className="pr-2 mt-6 w-max lg:max-w-[435px]" aria-labelledby="top-by-time-heading">
       <SectionTitle id="top-by-time-heading">Top 10 Anime</SectionTitle>
-      <Tabs defaultValue="day" className="w-full">
+      <div className="w-full bg-primary/5 p-2">
+        <Tabs defaultValue="day" className="w-full">
         <TabsList
           aria-label="Choose top anime time range"
-          className="mb-4 h-auto justify-start gap-2 bg-transparent p-0"
+          className="h-auto justify-start gap-2 bg-transparent p-0 w-full"
         >
           {TAB_CONFIG.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="rounded-none border border-zinc-700 bg-zinc-950 px-5 py-2 text-xs font-black uppercase text-zinc-400 shadow-none data-[state=active]:border-red-600 data-[state=active]:bg-red-600 data-[state=active]:text-white"
+              className="rounded-none border bg-background hover:border-primary px-5 py-2 text-xs font-black uppercase text-zinc-400 shadow-none data-[state=active]:!border-primary data-[state=active]:!bg-primary/30 data-[state=active]:!text-foreground"
             >
               {tab.label}
             </TabsTrigger>
@@ -37,7 +38,7 @@ export default function TopByTimeTabs({ items }: TopByTimeTabsProps) {
 
         {TAB_CONFIG.map((tab) => (
           <TabsContent key={tab.value} value={tab.value} className="mt-0">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+            <div className="w-full flex flex-col gap-1">
               {items[tab.key].slice(0, 10).map((anime, index) => (
                 <AnimeCard key={`${tab.value}-${anime.id}`} anime={anime} variant="compact" rank={index + 1} />
               ))}
@@ -45,6 +46,8 @@ export default function TopByTimeTabs({ items }: TopByTimeTabsProps) {
           </TabsContent>
         ))}
       </Tabs>
+      </div>
+      
     </section>
   );
 }

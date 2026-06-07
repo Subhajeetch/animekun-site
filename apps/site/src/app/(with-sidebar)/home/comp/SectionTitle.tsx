@@ -11,7 +11,7 @@ export default function SectionTitle({ id, icon, children, action }: SectionTitl
   return (
     <div className="mb-4 flex items-center justify-between gap-4">
       <div className="flex min-w-0 items-center gap-3">
-        <span className="h-8 w-1.5 shrink-0 bg-red-600" aria-hidden="true" />
+        <span className="h-8 w-1.5 shrink-0 bg-primary" aria-hidden="true" />
         <h2
           id={id}
           className="flex min-w-0 items-center gap-2 text-base font-black uppercase tracking-normal text-white md:text-lg"

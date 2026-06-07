@@ -25,23 +25,43 @@ function isLatestEpisodeAnime(anime: HomepageAnime | LatestEpisodeAnime): anime 
 export default function AnimeCard({ anime, variant = "wide", rank }: AnimeCardProps) {
   const title = getAnimeTitle(anime);
   const href = getAnimeHref(anime);
-  const image = variant === "poster" ? getAnimePoster(anime) : getAnimeImage(anime);
+  const image =  getAnimePoster(anime) || getAnimeImage(anime);
+
+
+  function getTextColor(bgColor: string) {
+  const hex = bgColor.replace("#", "");
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+  return brightness > 128 ? "#000000" : "#FFFFFF";
+}
+
+function formatRank(rank: number) {
+  return rank.toString().padStart(2, "0");
+}
+
+const bgColor = anime.coverImage.color ?? "#6e5ab0";
+const textColor = getTextColor(bgColor);
 
   if (variant === "compact") {
     return (
       <Link
         href={href}
         aria-label={`Open ${title}`}
-        className="group grid h-full grid-cols-[74px_1fr_44px] gap-3 border border-zinc-800 bg-zinc-900/70 p-2 text-white transition-colors hover:border-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+        className="group h-full flex gap-3 border border-zinc-800 bg-zinc-900/70 p-2 text-white transition-colors hover:border-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
       >
-        <div className="relative aspect-[2/3] overflow-hidden bg-zinc-950">
+        <div className="relative overflow-hidden bg-zinc-950">
           {image && (
             <CustomImage
               src={image}
               width={120}
               height={180}
               alt=""
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-12 h-16 object-cover transition-transform duration-500 group-hover:scale-105"
               aria-hidden="true"
             />
           )}
@@ -66,7 +86,20 @@ export default function AnimeCard({ anime, variant = "wide", rank }: AnimeCardPr
     <Link
       href={href}
       aria-label={`Open ${title}`}
-      className="group block h-full border border-zinc-800 bg-zinc-950 text-white transition-colors hover:border-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+      className="
+        group block h-full border transition-colors duration-300
+        bg-primary/2
+        text-foreground
+        hover:bg-[var(--bg)]
+        hover:text-[var(--text)]
+      "
+      style={
+        {
+          "--bg": bgColor,
+          "--text": textColor,
+          textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+        } as React.CSSProperties
+      }
     >
       <div className={`relative overflow-hidden bg-zinc-900 ${variant === "poster" ? "aspect-[2/3]" : "aspect-[16/9]"}`}>
         {image && (
@@ -75,26 +108,33 @@ export default function AnimeCard({ anime, variant = "wide", rank }: AnimeCardPr
             width={420}
             height={236}
             alt=""
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover"
             aria-hidden="true"
           />
         )}
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/90 to-transparent" />
         {rank && (
-          <span className="absolute left-2 top-2 bg-red-600 px-2 py-1 text-xs font-black text-white">
-            #{rank}
+          <span
+            className="absolute left-0 top-0 px-3 py-2 text-[24px] font-bold"
+            style={{
+              backgroundColor: bgColor,
+              color: getTextColor(bgColor),
+              textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+            }}
+          >
+            {formatRank(rank)}
           </span>
         )}
-      </div>
-      <div className="space-y-2 p-3">
-        <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-black leading-snug">{title}</h3>
-        <div className="flex items-center justify-between gap-2 text-xs font-semibold text-zinc-400">
+        <div className="flex items-center justify-between gap-2 text-xs font-semibold text-zinc-400 absolute inset-x-0 bottom-0 px-2">
           <span className="truncate">{formatAnimeMeta(anime)}</span>
           <span className="inline-flex shrink-0 items-center gap-1 text-amber-400">
             <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
             {formatScore(anime.averageScore)}
           </span>
         </div>
+      </div>
+      <div className="p-2">
+        <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-black leading-snug">{title}</h3>
       </div>
     </Link>
   );

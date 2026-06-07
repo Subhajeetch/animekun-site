@@ -245,17 +245,17 @@ function TabsTrigger({
   }
 
   return (
-    <button
-      ref={ref}
-      data-slot="tabs-trigger"
-      role="tab"
-      type="button"
-      aria-selected={isActive}
-      data-active={isActive ? "" : undefined}
-      disabled={disabled}
-      tabIndex={isActive ? 0 : -1}
-      onClick={() => !disabled && handleChange(value)}
-      onKeyDown={onKeyDown}
+   <button
+    ref={ref}
+    data-slot="tabs-trigger"
+    role="tab"
+    type="button"
+    aria-selected={isActive}
+    data-state={isActive ? "active" : "inactive"}
+    disabled={disabled}
+    tabIndex={isActive ? 0 : -1}
+    onClick={() => !disabled && handleChange(value)}
+    onKeyDown={onKeyDown}
       className={cn(
         "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center",
         "gap-1.5 border border-transparent px-1.5 py-0.5",

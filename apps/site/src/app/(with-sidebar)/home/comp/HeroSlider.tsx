@@ -5,7 +5,6 @@ import { Play, Star } from "lucide-react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import CustomImage from "@/components/custom-image";
 import type { SpotlightAnime } from "../lib/home-types";
-import "./some.css"
 import {
   formatAnimeMeta,
   formatEpisodeCount,

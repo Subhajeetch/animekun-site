@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Clock3, Flame, Star, TrendingUp } from "lucide-react";
 import AnimeRail from "./comp/AnimeRail";
+import AnimeGrid from "./comp/AnimeGrid";
 import GenreGrid from "./comp/GenreGrid";
 import HeroSlider from "./comp/HeroSlider";
 import TopByTimeTabs from "./comp/TopTen";
 import { getHomepageData, HOMEPAGE_REVALIDATE_SECONDS } from "./lib/home-api";
 import type { HomepageData } from "./lib/home-types";
 import { makeItemListJsonLd } from "./lib/home-utils";
+import "./comp/some.css"
 
 
 export const revalidate = HOMEPAGE_REVALIDATE_SECONDS;
@@ -103,10 +105,25 @@ export default async function HomePage() {
         id="trending-anime"
         title="Trending Animes"
         icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
+        variant="poster"
         items={home.trending}
       />
 
-      <TopByTimeTabs items={home.topByTime} />
+      <div className="flex flex-col lg:flex-row gap-4">
+        <AnimeGrid
+          id="this-season"
+          title="Popular This Season"
+          icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
+          variant="poster"
+          items={home.thisSeasonPopular.results}
+        />
+
+        <div className="">
+           <TopByTimeTabs items={home.topByTime} />
+        </div>
+      </div>
+
+      
 
       <AnimeRail
         id="latest-episodes"

@@ -37,3 +37,27 @@
         display: none;
     }
 }
+
+
+/* trending section */
+
+.animekun-rail-splide .splide__arrows {
+    position: absolute;
+    top: -48px;
+    right: 14px;
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+
+.animekun-rail-splide .splide__arrow {
+    position: static;
+    border-radius: 0;
+    background-color: var(--color-primary);
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+}

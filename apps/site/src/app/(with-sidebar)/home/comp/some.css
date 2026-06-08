@@ -61,3 +61,118 @@
     bottom: auto;
     transform: none;
 }
+
+
+
+/* this season section */
+
+.this-season-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+@media (min-width: 580px) and (max-width: 749px) {
+    .this-season-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 750px) and (max-width: 1023px) {
+    .this-season-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .this-season-grid>div:nth-last-child(-n+2) {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1299px) {
+    .this-season-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .this-season-grid>div:nth-last-child(-n+9) {
+        display: none;
+    }
+}
+
+@media (min-width: 1300px) and (max-width: 1579px) {
+    .this-season-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .this-season-grid>div:nth-last-child(-n+6) {
+        display: none;
+    }
+}
+
+@media (min-width: 1580px) and (max-width: 1749px) {
+    .this-season-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .this-season-grid>div:nth-last-child(-n+3) {
+        display: none;
+    }
+}
+
+@media (min-width: 1750px) {
+    .this-season-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+/* normal anime grid */
+.normal-anime-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 530px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 830px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1329px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .normal-anime-grid>div:nth-last-child(-n+4) {
+        display: none;
+    }
+}
+
+
+@media (min-width: 1330px) and (max-width: 1539px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .normal-anime-grid>div {
+        display: block;
+    }
+}
+
+
+@media (min-width: 1540px) and (max-width: 1779px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .normal-anime-grid>div:nth-last-child(-n+3) {
+        display: none;
+    }
+}
+
+@media (min-width: 1780px) {
+    .normal-anime-grid {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+}

@@ -49,7 +49,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
 
           return (
             <SplideSlide key={anime.id}>
-              <article className="relative h-[520px] overflow-hidden bg-background md:h-[560px] lg:h-[590px]">
+              <article className="relative h-[320px] overflow-hidden bg-background md:h-[560px] lg:h-[590px]">
                 {image && (
                   <div className="absolute inset-0">
                     <CustomImage
@@ -57,7 +57,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
                       width={1440}
                       height={720}
                       alt=""
-                      className="h-full w-full object-cover object-center md:object-[70%_center]"
+                      className="h-full w-full object-cover md:object-[70%_center]"
                       aria-hidden="true"
                     />
                   </div>
@@ -101,7 +101,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
                       Spotlight #{index + 1}
                     </p>
 
-                    <HeadingTag className="line-clamp-2 max-w-[620px] text-4xl font-black leading-[0.98] text-white drop-shadow md:text-5xl lg:text-6xl">
+                    <HeadingTag className="line-clamp-2 max-w-[620px] text-2xl font-black leading-[0.98] text-white drop-shadow md:text-5xl lg:text-6xl">
                       {title}
                     </HeadingTag>
 
@@ -121,7 +121,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
                       </span>
                     </div>
 
-                    <p className="mt-5 line-clamp-3 max-w-[600px] text-sm leading-7 text-zinc-300">
+                    <p className="mt-5 line-clamp-3 max-w-[600px] text-sm leading-7 text-foreground/50 hidden md:block">
                       {getHeroDescription(anime)}
                     </p>
 
@@ -129,7 +129,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
                       <Link
                         href={getWatchHref(anime)}
                         aria-label={`Watch ${title}`}
-                        className="inline-flex items-center gap-2 bg-red-600 px-6 py-3 text-sm font-black uppercase text-white transition-colors hover:bg-white hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+                        className="inline-flex items-center gap-2 bg-primary px-4 py-2 md:px-6 md:py-3 text-sm font-black uppercase transition-colors hover:bg-primary/80 hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
                       >
                         <Play className="h-5 w-5 fill-current" aria-hidden="true" />
                         Watch Now
@@ -138,7 +138,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
                       <Link
                         href={getAnimeHref(anime)}
                         aria-label={`View details for ${title}`}
-                        className="inline-flex items-center gap-2 border border-zinc-600 bg-background/70 px-6 py-3 text-sm font-black uppercase text-white transition-colors hover:border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                        className="items-center hidden md:flex gap-2 border bg-background/70 px-6 py-3 text-sm font-black uppercase transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary hover:text-primary"
                       >
                         <Star className="h-4 w-4" aria-hidden="true" />
                         Details

@@ -109,58 +109,44 @@ export default async function HomePage() {
         items={home.trending}
       />
 
-      <div className="flex flex-col lg:flex-row gap-4">
-        <AnimeGrid
-          id="this-season"
-          title="Popular This Season"
-          icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
-          variant="poster"
-          items={home.thisSeasonPopular.results}
-        />
-
-        <div className="">
-           <TopByTimeTabs items={home.topByTime} />
+      <div className="flex flex-col lg:flex-row gap-6 w-full">
+        <div className="w-full lg:flex-1">
+          <AnimeGrid
+            id="this-season"
+            title="Popular This Season"
+            icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
+            variant="poster"
+            items={home.thisSeasonPopular.results.slice(0, 18)}
+          />
+        </div>
+        <div className="w-full lg:w-[435px] lg:shrink-0">
+          <TopByTimeTabs items={home.topByTime} />
         </div>
       </div>
 
-      
 
-      <AnimeRail
-        id="latest-episodes"
-        title={home.latestEpisodes.title}
-        icon={<Clock3 className="h-5 w-5" aria-hidden="true" />}
-        items={home.latestEpisodes.results}
-        variant="compact"
-      />
+       <AnimeGrid
+          id="top-rated"
+          title={home.topRated.title}
+          items={home.topRated.results}
+          variant="poster"
+        />
 
-      <AnimeRail
-        id="most-watched"
-        title={home.mostWatched.title}
-        icon={<Flame className="h-5 w-5" aria-hidden="true" />}
-        items={home.mostWatched.results}
-      />
+        <AnimeGrid
+          id="most-popular"
+          title={home.mostPopular.title}
+          icon={<Star className="h-5 w-5" aria-hidden="true" />}
+          items={home.mostPopular.results}
+          variant="poster"
+        />
 
-      <AnimeRail
-        id="most-popular"
-        title={home.mostPopular.title}
-        icon={<Star className="h-5 w-5" aria-hidden="true" />}
-        items={home.mostPopular.results}
-        variant="poster"
-      />
-
-      <AnimeRail
-        id="top-rated"
-        title={home.topRated.title}
-        items={home.topRated.results}
-        variant="poster"
-      />
-
-      <AnimeRail
-        id="this-season"
-        title={home.thisSeasonPopular.title}
-        items={home.thisSeasonPopular.results}
-        variant="poster"
-      />
+        <AnimeGrid
+          id="latest-episodes"
+          title={home.latestEpisodes.title}
+          icon={<Clock3 className="h-5 w-5" aria-hidden="true" />}
+          items={home.latestEpisodes.results}
+          variant="poster"
+        />
 
       <div className="h-14" />
     </div>

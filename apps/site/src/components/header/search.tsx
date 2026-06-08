@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AnimeResult, MediaFormat, AniListError } from "@repo/anilist";
 //import type { AnimeResult } from "@/anilist/search-animes";
 import CustomImage from "@/components/custom-image";
+import getAnimeId from "@/utils/getAnimeUrl";
 import Link from "next/link";
 
 import { searchAnimes } from "@/utils/search-animes";
@@ -127,16 +128,9 @@ function ResultCard({
   result: SearchResult;
   onSelect: (title: string) => void;
 }) {
-  // Sanitize title for URL: remove special characters, handle spaces, remove duplicates
-  const sanitizedTitle = result.title
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "") // Keep only lowercase letters, numbers, spaces, dashes
-    .replace(/\s+/g, "-") // Replace spaces with dashes
-    .replace(/-+/g, "-") // Replace multiple dashes with single dash
-    .replace(/^-+|-+$/g, ""); // Remove leading/trailing dashes
 
-  const url = `/anime/${sanitizedTitle}-${result.id}`;
+  const animeHrf = getAnimeId(result.title, result.id);
+  const url = `/anime/${animeHrf}`;
 
   return (
     <Link

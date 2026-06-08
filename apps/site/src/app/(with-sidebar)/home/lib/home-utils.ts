@@ -1,5 +1,7 @@
 import type { HomepageAnime, SpotlightAnime } from "./home-types";
 
+import getAnimeId from "@/utils/getAnimeUrl";
+
 export function getAnimeTitle(anime: Pick<HomepageAnime, "title">): string {
   return (
     anime.title.english ??
@@ -25,11 +27,13 @@ export function getAnimePoster(anime: HomepageAnime): string {
 }
 
 export function getAnimeHref(anime: HomepageAnime): string {
-  return `/anime/${anime.id}`;
+  const animeId = getAnimeId(getAnimeTitle(anime), anime.id);
+  return `/anime/${animeId}`;
 }
 
 export function getWatchHref(anime: HomepageAnime): string {
-  return `/watch/${anime.id}`;
+  const animeId = getAnimeId(getAnimeTitle(anime), anime.id);
+  return `/watch/${animeId}`;
 }
 
 export function cleanDescription(html: string | null): string {

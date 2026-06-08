@@ -5,15 +5,14 @@ import AnimeGrid from "./comp/AnimeGrid";
 import GenreGrid from "./comp/GenreGrid";
 import HeroSlider from "./comp/HeroSlider";
 import TopByTimeTabs from "./comp/TopTen";
-import { getHomepageData, HOMEPAGE_REVALIDATE_SECONDS } from "./lib/home-api";
+import { getHomepageData } from "./lib/home-api";
 import type { HomepageData } from "./lib/home-types";
 import { makeItemListJsonLd } from "./lib/home-utils";
 import "./comp/some.css"
 
+export const dynamic = 'force-dynamic';
 
-export const revalidate = HOMEPAGE_REVALIDATE_SECONDS;
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const SITE_URL = "https://animekun.org";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

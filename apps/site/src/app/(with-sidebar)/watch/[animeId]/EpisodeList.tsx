@@ -28,22 +28,42 @@ export default function EpisodeList({
   onEpisodeSelect,
   nextAirEpisode,
 }: EpisodeListProps) {
-  const regularEpisodes = useMemo(
-    () =>
-      episodes
-        .filter((ep) => {
-          if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
-          if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode)
-            return false;
-          return true;
-        })
-        .sort((a, b) => Number(a.episode) - Number(b.episode)),
-    [episodes, nextAirEpisode]
-  );
 
-  const totalEps = regularEpisodes.length;
-  const pageCount = Math.ceil(totalEps / PAGE_SIZE);
-  const [page, setPage] = useState(0);
+ const regularEpisodes = useMemo(
+  () =>
+    episodes
+      .filter((ep) => {
+        if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
+        if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode)
+          return false;
+        return true;
+      })
+      .sort((a, b) => Number(a.episode) - Number(b.episode)),
+  [episodes, nextAirEpisode]
+);
+
+const totalEps = regularEpisodes.length;
+const pageCount = Math.ceil(totalEps / PAGE_SIZE);
+
+// 2. Helper function to find which page an episode belongs to
+const getPageForEpisode = (epNum: number | null) => {
+  if (!epNum) return 0;
+  // Find the index of the current episode within our filtered/sorted regular episodes
+  const targetIndex = regularEpisodes.findIndex((ep) => Number(ep.episode) === epNum);
+  if (targetIndex === -1) return 0;
+  return Math.floor(targetIndex / PAGE_SIZE);
+};
+
+// 3. Initialize the state to the correct page immediately on mount/reload
+const [page, setPage] = useState(() => getPageForEpisode(currentEpisode));
+
+// 4. Keep the page in sync if the currentEpisode changes while the component is active
+useEffect(() => {
+  if (currentEpisode !== null) {
+    const targetPage = getPageForEpisode(currentEpisode);
+    setPage(targetPage);
+  }
+}, [currentEpisode, regularEpisodes]);
 
   // Ref attached to whichever episode button is currently active so we can
   // scroll it into view without touching the scroll container directly.
@@ -70,17 +90,6 @@ export default function EpisodeList({
       container.scrollTo({ top: container.scrollTop + center, behavior: 'smooth' });
     }, 80);
 
-    return () => clearTimeout(id);
-  }, [currentEpisode, page]);
-
-  // ── Scroll the active episode button into view ────────────────────────────
-  // Triggers after both a page change and an episode change. The small timeout
-  // lets React flush the DOM update before we measure.
-  useEffect(() => {
-    if (!activeEpRef.current) return;
-    const id = setTimeout(() => {
-      activeEpRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    }, 80);
     return () => clearTimeout(id);
   }, [currentEpisode, page]);
 
@@ -169,7 +178,7 @@ export default function EpisodeList({
               return (
                 <button
                   key={ep.episode}
-                  ref={isActive ? activeEpRef : undefined}
+                  ref={activeEpRef}
                   role="option"
                   aria-selected={isActive}
                   aria-label={`Episode ${num}: ${epTitle}${isWatched ? ' (watched)' : ''}`}
@@ -213,7 +222,7 @@ export default function EpisodeList({
               return (
                 <button
                   key={ep.episode}
-                  ref={isActive ? activeEpRef : undefined}
+                  ref={activeEpRef}
                   role="option"
                   aria-selected={isActive}
                   aria-label={`Episode ${num}${epTitle ? `: ${epTitle}` : ''}${isWatched ? ' (watched)' : ''}`}

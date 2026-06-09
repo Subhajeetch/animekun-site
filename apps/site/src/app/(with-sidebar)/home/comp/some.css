@@ -71,7 +71,7 @@
 }
 
 
-@media (min-width: 580px) and (max-width: 749px) {
+@media (min-width: 480px) and (max-width: 749px) {
     .this-season-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -128,7 +128,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-@media (min-width: 530px) {
+@media (min-width: 480px) {
     .normal-anime-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -174,5 +174,137 @@
 @media (min-width: 1780px) {
     .normal-anime-grid {
         grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+}
+
+
+/* genre grid */
+.genre-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.genre-grid>a {
+    display: none;
+}
+
+.genre-grid>a:nth-child(-n + 3),
+.genre-grid>a:last-child {
+    display: block;
+}
+
+@media (min-width: 730px) {
+
+    .genre-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .genre-grid>a:nth-child(-n + 5),
+    .genre-grid>a:last-child {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+
+    .genre-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .genre-grid>a:nth-child(-n + 7),
+    .genre-grid>a:last-child {
+        display: block;
+    }
+}
+
+@media (min-width: 1330px) {
+
+    .genre-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .genre-grid>a:nth-child(-n + 9),
+    .genre-grid>a:last-child {
+        display: block;
+    }
+}
+
+
+@media (min-width: 1540px) {
+
+    .genre-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .genre-grid>a:nth-child(-n + 11),
+    .genre-grid>a:last-child {
+        display: block;
+    }
+}
+
+
+.genre-grid>a {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: genreCardIn 0.45s ease-out forwards;
+}
+
+.genre-grid>a:nth-child(1) {
+    animation-delay: 20ms;
+}
+
+.genre-grid>a:nth-child(2) {
+    animation-delay: 60ms;
+}
+
+.genre-grid>a:nth-child(3) {
+    animation-delay: 100ms;
+}
+
+.genre-grid>a:nth-child(4) {
+    animation-delay: 140ms;
+}
+
+.genre-grid>a:nth-child(5) {
+    animation-delay: 180ms;
+}
+
+.genre-grid>a:nth-child(6) {
+    animation-delay: 220ms;
+}
+
+.genre-grid>a:nth-child(7) {
+    animation-delay: 260ms;
+}
+
+.genre-grid>a:nth-child(8) {
+    animation-delay: 300ms;
+}
+
+.genre-grid>a:nth-child(9) {
+    animation-delay: 340ms;
+}
+
+.genre-grid>a:nth-child(10) {
+    animation-delay: 380ms;
+}
+
+.genre-grid>a:nth-child(11) {
+    animation-delay: 420ms;
+}
+
+.genre-grid>a:nth-child(12) {
+    animation-delay: 460ms;
+}
+
+@keyframes genreCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -11,7 +11,6 @@ interface NextAiringBannerProps {
 // ── Countdown helpers ─────────────────────────────────────────────────────────
 
 function getSecondsRemaining(airingAt: number): number {
-  // airingAt is a Unix timestamp in seconds
   return Math.max(0, airingAt - Math.floor(Date.now() / 1000));
 }
 
@@ -48,7 +47,6 @@ export function formatAirDate(airingAtDate: string | Date | number): string {
 
   const date = airingAtDate instanceof Date ? airingAtDate : new Date(airingAtDate);
 
-  // Faster validation check than Number.isNaN(date.getTime())
   if (isNaN(date.getTime())) {
     return 'Unknown date';
   }
@@ -61,13 +59,11 @@ export function formatAirDate(airingAtDate: string | Date | number): string {
 export default function NextAiringBanner({ nextAirEpisode }: NextAiringBannerProps) {
   const { episode, airingAt, airingAtDate } = nextAirEpisode;
 
-  // airingAt must exist to show a countdown
   if (!episode || !airingAt) return null;
 
   const [open, setOpen] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(() => getSecondsRemaining(airingAt));
 
-  // Tick every second
   useEffect(() => {
     const id = setInterval(() => {
       const remaining = getSecondsRemaining(airingAt);
@@ -97,7 +93,9 @@ export default function NextAiringBanner({ nextAirEpisode }: NextAiringBannerPro
 
         <span className="text-zinc-700 text-[12px] shrink-0">—</span>
 
+        {/* Added suppressHydrationWarning to accommodate dynamic time ticking */}
         <span
+          suppressHydrationWarning
           className={`text-[12px] font-bold tabular-nums tracking-wide ${
             hasAired ? 'text-primary' : 'text-zinc-400'
           }`}
@@ -117,17 +115,17 @@ export default function NextAiringBanner({ nextAirEpisode }: NextAiringBannerPro
             Upcoming Episode Details
           </p>
 
-
-              <div className="text-[13px] text-foreground/60 flex gap-2 items-center">
-                <span>Episode{' '}</span>
-                <span className="font-bold text-foreground/90">{episode}</span>
-                {airingAtDate && (
-                <span>
-                  airing on {formatAirDate(airingAtDate)}
-                </span>
-              )}
-              </div>
-            </div>
+          <div className="text-[13px] text-foreground/60 flex gap-2 items-center">
+            <span>Episode{' '}</span>
+            <span className="font-bold text-foreground/90">{episode}</span>
+            {airingAtDate && (
+              /* Added suppressHydWarning for dynamic air date string */
+              <span suppressHydrationWarning>
+                airing on {formatAirDate(airingAtDate)}
+              </span>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

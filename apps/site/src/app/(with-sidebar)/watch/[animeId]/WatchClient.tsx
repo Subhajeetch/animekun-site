@@ -459,7 +459,8 @@ useEffect(() => {
 
             {/* Episode list — fills remaining height, scrolls internally */}
             <div className="lg:flex-1 lg:min-h-0 flex flex-col gap-2 relative">
-              <div className="border border-zinc-800 bg-zinc-900/30 lg:flex-1 lg:overflow-y-auto">
+              {/* Changed from lg:overflow-y-auto to lg:flex lg:flex-col lg:min-h-0 */}
+              <div className="border border-zinc-800 bg-zinc-900/30 lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
                 <EpisodeListWrapper
                   loadingState={loadingState}
                   fetchError={fetchError}
@@ -536,7 +537,7 @@ function EpisodeListWrapper({
   }
 
   return (
-    <div className={noBorder ? 'p-2' : ''}>
+    <div className={`flex flex-col lg:h-full lg:min-h-0 ${noBorder ? 'p-2' : ''}`}>
       <EpisodeList
         episodes={regularEpisodes}
         currentEpisode={currentEpisode}

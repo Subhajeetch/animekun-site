@@ -28,70 +28,86 @@ export default function EpisodeList({
   onEpisodeSelect,
   nextAirEpisode,
 }: EpisodeListProps) {
+  const regularEpisodes = useMemo(
+    () =>
+      episodes
+        .filter((ep) => {
+          if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
+          if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode)
+            return false;
+          return true;
+        })
+        .sort((a, b) => Number(a.episode) - Number(b.episode)),
+    [episodes, nextAirEpisode]
+  );
 
- const regularEpisodes = useMemo(
-  () =>
-    episodes
-      .filter((ep) => {
-        if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
-        if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode)
-          return false;
-        return true;
-      })
-      .sort((a, b) => Number(a.episode) - Number(b.episode)),
-  [episodes, nextAirEpisode]
-);
+  const totalEps = regularEpisodes.length;
+  const pageCount = Math.ceil(totalEps / PAGE_SIZE);
 
-const totalEps = regularEpisodes.length;
-const pageCount = Math.ceil(totalEps / PAGE_SIZE);
+  const getPageForEpisode = (epNum: number | null) => {
+    if (!epNum) return 0;
+    const targetIndex = regularEpisodes.findIndex((ep) => Number(ep.episode) === epNum);
+    if (targetIndex === -1) return 0;
+    return Math.floor(targetIndex / PAGE_SIZE);
+  };
 
-// 2. Helper function to find which page an episode belongs to
-const getPageForEpisode = (epNum: number | null) => {
-  if (!epNum) return 0;
-  // Find the index of the current episode within our filtered/sorted regular episodes
-  const targetIndex = regularEpisodes.findIndex((ep) => Number(ep.episode) === epNum);
-  if (targetIndex === -1) return 0;
-  return Math.floor(targetIndex / PAGE_SIZE);
-};
+  const [page, setPage] = useState(() => getPageForEpisode(currentEpisode));
 
-// 3. Initialize the state to the correct page immediately on mount/reload
-const [page, setPage] = useState(() => getPageForEpisode(currentEpisode));
+  useEffect(() => {
+    if (currentEpisode !== null) {
+      const targetPage = getPageForEpisode(currentEpisode);
+      setPage(targetPage);
+    }
+  }, [currentEpisode, regularEpisodes]);
 
-// 4. Keep the page in sync if the currentEpisode changes while the component is active
-useEffect(() => {
-  if (currentEpisode !== null) {
-    const targetPage = getPageForEpisode(currentEpisode);
-    setPage(targetPage);
-  }
-}, [currentEpisode, regularEpisodes]);
-
-  // Ref attached to whichever episode button is currently active so we can
-  // scroll it into view without touching the scroll container directly.
   const activeEpRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const useCompact = totalEps > 30;
 
-  // ── Auto-jump to the page that contains the currently-playing episode ─────
-  // Runs on mount (handles reload) and whenever currentEpisode changes.
+  // ── 1. Bulletproof Internal Container Scroll ──
   useEffect(() => {
-    if (!activeEpRef.current || !scrollContainerRef.current) return;
-
+    // Increased timeout slightly to ensure all Tailwind layouts are fully painted
     const id = setTimeout(() => {
+      if (!activeEpRef.current || !scrollContainerRef.current) return;
+
       const container = scrollContainerRef.current;
       const button = activeEpRef.current;
-      if (!container || !button) return;
 
-      const containerTop = container.getBoundingClientRect().top;
-      const buttonTop = button.getBoundingClientRect().top;
-      const offset = buttonTop - containerTop;
-      const center = offset - container.clientHeight / 2 + button.offsetHeight / 2;
+      // Calculate absolute distance from top of the scroll container
+      let offsetTop = 0;
+      let el: HTMLElement | null = button;
+      
+      // Traverse up to the container to get the exact pixel offset
+      while (el && el !== container) {
+        offsetTop += el.offsetTop;
+        el = el.offsetParent as HTMLElement;
+      }
 
-      container.scrollTo({ top: container.scrollTop + center, behavior: 'smooth' });
-    }, 80);
+      // Calculate the perfect center
+      const targetScroll = offsetTop - (container.clientHeight / 2) + (button.clientHeight / 2);
+
+      // Scroll ONLY the internal episode list wrapper
+      container.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth',
+      });
+    }, 150);
 
     return () => clearTimeout(id);
   }, [currentEpisode, page]);
+
+  // ── 2. Click Handler to push main window up ──
+  const handleEpisodeClick = (ep: EpisodeData, num: number) => {
+    // Fire the selection to your parent component
+    onEpisodeSelect(ep, num);
+    
+    // Explicitly scroll the main browser window up to the media player
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const pageEpisodes = useMemo(() => {
     if (totalEps <= 100) return regularEpisodes;
@@ -115,9 +131,11 @@ useEffect(() => {
   }
 
   return (
-    <div>
+    // 1. Made the outermost div a flex container
+    <div className="flex flex-col lg:h-full lg:min-h-0">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between">
+      {/* 2. Added shrink-0 so the header never gets squished */}
+      <div className="shrink-0 flex items-center gap-3 px-3 py-1 pb-2 border-b mb-2 border-zinc-800 justify-between">
         <span className="flex items-center gap-3 text-[13px] uppercase tracking-[0.22em] font-bold text-zinc-500">
           <TvMinimal className="w-4 h-4 text-zinc-500" />
           Episodes
@@ -164,8 +182,12 @@ useEffect(() => {
         )}
       </div>
 
-      {/* ── Episode list ── */}
-      <div ref={scrollContainerRef} className="pr-1.5 max-h-100 lg:max-h-full overflow-y-auto">
+      {/* ── Episode list container ── */}
+      {/* 3. Replaced lg:max-h-[calc...] with lg:flex-1 lg:min-h-0 lg:max-h-none */}
+      <div 
+        ref={scrollContainerRef} 
+        className="relative pr-1.5 overflow-y-auto max-h-100 lg:max-h-none lg:flex-1 lg:min-h-0"
+      >
         {!useCompact ? (
           /* ── Full list (≤ 30 episodes) ── */
           <div className="flex flex-col gap-0" role="listbox" aria-label="Episode list">
@@ -178,11 +200,11 @@ useEffect(() => {
               return (
                 <button
                   key={ep.episode}
-                  ref={activeEpRef}
+                  ref={isActive ? activeEpRef : null}
                   role="option"
                   aria-selected={isActive}
                   aria-label={`Episode ${num}: ${epTitle}${isWatched ? ' (watched)' : ''}`}
-                  onClick={() => onEpisodeSelect(ep, num)}
+                  onClick={() => handleEpisodeClick(ep, num)}
                   className={`flex items-center gap-3 px-3 py-2.5 border-b border-zinc-800/60 text-left transition-colors ${
                     isActive
                       ? 'bg-primary/10 border-l-2 border-l-primary text-foreground pl-2.5'
@@ -222,12 +244,12 @@ useEffect(() => {
               return (
                 <button
                   key={ep.episode}
-                  ref={activeEpRef}
+                  ref={isActive ? activeEpRef : null}
                   role="option"
                   aria-selected={isActive}
                   aria-label={`Episode ${num}${epTitle ? `: ${epTitle}` : ''}${isWatched ? ' (watched)' : ''}`}
                   title={epTitle}
-                  onClick={() => onEpisodeSelect(ep, num)}
+                  onClick={() => handleEpisodeClick(ep, num)}
                   className={`px-5 py-1.5 text-[13px] font-bold border transition-colors ${
                     isActive
                       ? 'border-primary bg-primary/10 text-primary'

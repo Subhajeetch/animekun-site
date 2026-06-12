@@ -34,46 +34,46 @@ export default function GenreGrid({ animePool }: { animePool: HomepageAnime[] })
       <div className="genre-grid grid ">
         {popularGenres.map((genre, index) => (
           <Link
-    key={genre.id}
-    href={genreHref(genre.display)}
-    aria-label={`Browse ${genre.display} anime`}
-    className="group relative h-16 overflow-hidden px-3 py-2 font-black transition-transform hover:-translate-y-0.5"
-    style={{
-      backgroundColor: genre.bgColor,
-      color: genre.fgColor,
-    }}
-  >
-    <span className="relative z-10 text-sm font-bold">
-      {genre.display}
-    </span>
+            key={genre.id}
+            href={genreHref(genre.display)}
+            aria-label={`Browse ${genre.display} anime`}
+            className="group relative h-16 overflow-hidden px-3 py-2 font-black transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: genre.bgColor,
+              color: genre.fgColor,
+            }}
+          >
+            <span className="relative z-10 text-sm font-bold">
+              {genre.display}
+            </span>
 
-    <Image
-      src={genre.url}
-      alt={genre.display}
-      aria-hidden="true"
-      loading="lazy"
-      decoding="async"
-      fetchPriority="low"
-      width={92}
-      height={130}
-      className="
-        absolute
-        right-[-6px]
-        bottom-[-2px]
-        h-[50px]
-        w-[50px]
-        rotate-[20deg]
-        shadow-[0_4px_12px_rgba(0,0,0,0.35),0_12px_24px_rgba(0,0,0,0.2)]
-        object-cover
-        transition-transform
-        duration-300
-        group-hover:rotate-[22deg]
-        group-hover:scale-105
-        pointer-events-none
-        select-none
-      "
-    />
-  </Link>
+            <Image
+              src={genre.url}
+              alt={genre.display}
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              width={92}
+              height={130}
+              className="
+                absolute
+                right-[-6px]
+                bottom-[-2px]
+                h-[50px]
+                w-[50px]
+                rotate-[20deg]
+                shadow-[0_4px_12px_rgba(0,0,0,0.35),0_12px_24px_rgba(0,0,0,0.2)]
+                object-cover
+                transition-transform
+                duration-300
+                group-hover:rotate-[22deg]
+                group-hover:scale-105
+                pointer-events-none
+                select-none
+              "
+            />
+          </Link>
         ))}
 
         <Link

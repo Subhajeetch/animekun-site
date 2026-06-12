@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Clock3, Flame, Star, TrendingUp } from "lucide-react";
+import { Clock3, Star, TrendingUp } from "lucide-react";
 import AnimeRail from "./comp/AnimeRail";
 import AnimeGrid from "./comp/AnimeGrid";
 import GenreGrid from "./comp/GenreGrid";

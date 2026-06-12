@@ -1,8 +1,8 @@
-import type { HomepageAnime, SpotlightAnime } from "./home-types";
+import type { AnimeType, SpotlightAnime } from "@/types/anime-card";
 
 import getAnimeId from "@/utils/getAnimeUrl";
 
-export function getAnimeTitle(anime: Pick<HomepageAnime, "title">): string {
+export function getAnimeTitle(anime: Pick<AnimeType, "title">): string {
   return (
     anime.title.english ??
     anime.title.userPreferred ??
@@ -12,7 +12,7 @@ export function getAnimeTitle(anime: Pick<HomepageAnime, "title">): string {
   );
 }
 
-export function getAnimeImage(anime: HomepageAnime): string {
+export function getAnimeImage(anime: AnimeType): string {
   return (
     anime.bannerImage ??
     anime.coverImage.extraLarge ??
@@ -22,16 +22,16 @@ export function getAnimeImage(anime: HomepageAnime): string {
   );
 }
 
-export function getAnimePoster(anime: HomepageAnime): string {
+export function getAnimePoster(anime: AnimeType): string {
   return anime.coverImage.extraLarge ?? anime.coverImage.large ?? anime.coverImage.medium ?? "";
 }
 
-export function getAnimeHref(anime: HomepageAnime): string {
+export function getAnimeHref(anime: AnimeType): string {
   const animeId = getAnimeId(getAnimeTitle(anime), anime.id);
   return `/anime/${animeId}`;
 }
 
-export function getWatchHref(anime: HomepageAnime): string {
+export function getWatchHref(anime: AnimeType): string {
   const animeId = getAnimeId(getAnimeTitle(anime), anime.id);
   return `/watch/${animeId}`;
 }
@@ -57,7 +57,7 @@ export function getHeroDescription(anime: SpotlightAnime): string {
   return description.length > 260 ? `${description.slice(0, 257).trim()}...` : description;
 }
 
-export function formatAnimeMeta(anime: HomepageAnime): string {
+export function formatAnimeMeta(anime: AnimeType): string {
   const parts = [
     anime.format?.replace(/_/g, " "),
     anime.duration ? `${anime.duration}m` : null,
@@ -79,11 +79,11 @@ export function formatLatestEpisode(episode: number | null): string {
   return episode == null ? "Latest episode" : `Episode ${episode}`;
 }
 
-export function genreHref(id: string): string {
-  return `/genre/${id}`;
+export function genreHref(genre: string): string {
+  return `/search?genres=${encodeURIComponent(genre)}`;
 }
 
-export function makeItemListJsonLd(items: HomepageAnime[], siteUrl: string) {
+export function makeItemListJsonLd(items: AnimeType[], siteUrl: string) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",

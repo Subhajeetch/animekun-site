@@ -121,12 +121,46 @@ query GetAnimeByGenre($genre: String, $page: Int, $perPage: Int, $sort: [MediaSo
 
 // ─── Helper Functions ─────────────────────────────────────────
 
+/**
+ * Converts slug parameters into accurate string inputs expected by AniList.
+ */
+function convertToAniListGenre(id: string): string {
+  // Hardcoded mapping representing your exact frontend genreMap array
+  const map: Record<string, string> = {
+    "action": "Action",
+    "slice-of-life": "Slice of Life",
+    "adventure": "Adventure",
+    "comedy": "Comedy",
+    "drama": "Drama",
+    "ecchi": "Ecchi",
+    "fantasy": "Fantasy",
+    "horror": "Horror",
+    "mahou-shoujo": "Mahou Shoujo",
+    "mecha": "Mecha",
+    "music": "Music",
+    "mystery": "Mystery",
+    "psychological": "Psychological",
+    "romance": "Romance",
+    "sci-fi": "Sci-Fi",
+    "sports": "Sports",
+    "supernatural": "Supernatural",
+    "thriller": "Thriller"
+  };
+
+  const normalizedId = id.toLowerCase().trim();
+  
+  // Return matched value or run a basic regex fallback if an unknown id comes in
+  return map[normalizedId] || normalizedId
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   return String(error);
 }
 
-// Returns both the backend sort array and the string representation actually applied
 function validateSortMode(sortParam: string | undefined): { convertedSort: MediaSort[]; appliedString: string } {
   if (!sortParam) {
     return { convertedSort: [MediaSort.POPULARITY_DESC], appliedString: "popularity-desc" };
@@ -141,7 +175,6 @@ function validateSortMode(sortParam: string | undefined): { convertedSort: Media
     };
   }
   
-  // Return default configuration if string doesn't match standard enum items
   return { convertedSort: [MediaSort.POPULARITY_DESC], appliedString: "popularity-desc" }; 
 }
 
@@ -205,6 +238,9 @@ genreRoute.get("/genre/:id", async (c: Context) => {
     return c.json({ success: false, error: "Genre identifier parameter is missing." }, 400);
   }
   
+  // Convert incoming "slice-of-life" into "Slice of Life"
+  const aniListStandardGenre = convertToAniListGenre(genreId);
+  
   const pageParam = c.req.query("page");
   const perPageParam = c.req.query("per-page");
   const sortByParam = c.req.query("sort-by") || "popularity-desc";
@@ -234,7 +270,6 @@ genreRoute.get("/genre/:id", async (c: Context) => {
     return c.json(cachedEntry.data);
   }
 
-  // Extract sort rules alongside what literal string value represents them
   const { convertedSort, appliedString } = validateSortMode(sortByParam);
   
   const controller = new AbortController();
@@ -249,7 +284,8 @@ genreRoute.get("/genre/:id", async (c: Context) => {
       },
       body: JSON.stringify({
         query: GENRE_QUERY,
-        variables: { genre: genreId, page, perPage, sort: convertedSort },
+        // Using the converted string variable here
+        variables: { genre: aniListStandardGenre, page, perPage, sort: convertedSort },
       }),
       signal: controller.signal,
     });

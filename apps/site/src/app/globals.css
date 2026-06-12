@@ -97,7 +97,7 @@ button {
 	--primary-foreground: oklch(0.205 0 0);
 	--secondary: oklch(0.269 0 0);
 	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
+	--muted: oklch(18.625% 0.02114 190.053);
 	--muted-foreground: oklch(0.708 0 0);
 	--accent: oklch(0.269 0 0);
 	--accent-foreground: oklch(0.985 0 0);
@@ -170,5 +170,68 @@ button {
 	}
   html {
     @apply font-sans;
+	}
+}
+
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+
+
+
+.anime-grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 480px) {
+	.anime-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 830px) {
+	.anime-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1024px) and (max-width: 1329px) {
+	.anime-grid {
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+	}
+}
+
+
+@media (min-width: 1330px) and (max-width: 1539px) {
+	.anime-grid {
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+	}
+}
+
+
+@media (min-width: 1540px) and (max-width: 1779px) {
+	.anime-grid {
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1780px) {
+	.anime-grid {
+		grid-template-columns: repeat(8, minmax(0, 1fr));
 	}
 }

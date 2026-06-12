@@ -35,7 +35,7 @@ export default function GenreGrid({ animePool }: { animePool: HomepageAnime[] })
         {popularGenres.map((genre, index) => (
           <Link
             key={genre.id}
-            href={genreHref(genre.display)}
+            href={genreHref(genre.id)}
             aria-label={`Browse ${genre.display} anime`}
             className="group relative h-16 overflow-hidden px-3 py-2 font-black transition-transform hover:-translate-y-0.5"
             style={{

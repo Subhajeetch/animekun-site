@@ -96,6 +96,7 @@ export default function VideoPlayer({
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [progress, setProgress] = useState<Progress | null>(null);
+  const [iframeNonce, setIframeNonce] = useState(0);
 
   // ── Hydrate preferences from localStorage on mount ────────────────────────
   useEffect(() => {
@@ -104,16 +105,31 @@ export default function VideoPlayer({
   }, []);
 
   // ── Rebuild iframe URL only when src changes ──────────────────────────────
-  useEffect(() => {
-    setProgress(null);
-    if (!src) {
-      setIframeSrc(null);
-      return;
-    }
-    // Read from localStorage directly — avoids stale closure on videoAutoplay state.
+ useEffect(() => {
+  setProgress(null);
+
+  if (!src) {
+    setIframeSrc(null);
+    return;
+  }
+
+  // destroy current iframe first
+  setIframeSrc(null);
+
+  const id = requestAnimationFrame(() => {
     const va = readVideoAutoplay();
-    setIframeSrc(`${src}${src.includes('?') ? '&' : '?'}autoplay=${va ? 'true' : 'false'}`);
-  }, [src]); // ← only src, never autoplay state
+
+    setIframeNonce((n) => n + 1);
+
+    setIframeSrc(
+      `${src}${src.includes('?') ? '&' : '?'}autoplay=${
+        va ? 'true' : 'false'
+      }&_=${Date.now()}`
+    );
+  });
+
+  return () => cancelAnimationFrame(id);
+}, [src]);
 
   // ── Ref for postMessage handler (always sees latest without re-registering) ─
   const stateRef = useRef({
@@ -199,6 +215,7 @@ export default function VideoPlayer({
             </div>
           ) : iframeSrc ? (
             <iframe
+              key={iframeNonce}
               src={iframeSrc}
               className="absolute inset-0 w-full h-full bg-black"
               frameBorder="0"

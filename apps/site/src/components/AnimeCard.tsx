@@ -58,7 +58,7 @@ const textColor = getTextColor(bgColor);
         } as React.CSSProperties
       }
     >
-      <div className="relative overflow-hidden bg-zinc-900 aspect-2/3">
+      <div className="relative overflow-hidden bg-muted aspect-2/3">
         {image && (
           <CustomImage
             src={image}
@@ -69,7 +69,7 @@ const textColor = getTextColor(bgColor);
             aria-hidden="true"
           />
         )}
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/90 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
         <div className="flex items-center justify-between gap-2 text-xs font-semibold text-zinc-400 absolute inset-x-0 bottom-0 px-2">
           <span className="truncate">{formatAnimeMeta(anime)}</span>
           <span className="inline-flex shrink-0 items-center gap-1 text-amber-400">

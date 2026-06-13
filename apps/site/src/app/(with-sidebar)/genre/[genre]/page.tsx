@@ -46,7 +46,7 @@ function formatGenreName(slug: string): string {
     .join("-");
 }
 
-export const revalidate = 86400;
+export const dynamic = 'force-dynamic';
 
 async function getGenreData(
   genreId: string,

@@ -53,7 +53,7 @@ const textColor = getTextColor(bgColor);
     <Link
       href={href}
       aria-label={`Open ${title}`}
-      className="group relative flex h-24 w-full items-center justify-between border-l border-2 bg-background p-0 text-white transition-colors focus-visible:outline-none rounded-none  hover:border-l-(--bg)"
+      className="group relative flex h-24 w-full items-center justify-between border-l border-2 bg-background transition-colors focus-visible:outline-none rounded-none  hover:border-l-(--bg)"
        style={
         {
           "--bg": bgColor,
@@ -89,7 +89,7 @@ const textColor = getTextColor(bgColor);
           </h3>
           
           {/* Subtitles / Episode counters */}
-          <div className="mt-1 flex items-center gap-2 text-xs font-semibold text-zinc-400">
+          <div className="mt-1 flex items-center gap-2 text-xs font-semibold text-foreground/70">
             <span className="inline-flex items-center gap-1 text-amber-400">
               <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
               {formatScore(anime.averageScore)}
@@ -138,7 +138,7 @@ const textColor = getTextColor(bgColor);
             
             {/* The Magic Fading Mask Layer */}
             {/* Fades from dark zinc-950 on the left to completely transparent on the right */}
-            <div className="absolute inset-0 bg-linear-to-r from-zinc-950 via-zinc-950/70 to-transparent pointer-events-none rounded-none" />
+            <div className="absolute inset-0 bg-linear-to-r from-background via-background/70 to-transparent pointer-events-none rounded-none" />
           </div>
         )}
 
@@ -170,7 +170,7 @@ const textColor = getTextColor(bgColor);
         } as React.CSSProperties
       }
     >
-      <div className={`relative overflow-hidden bg-zinc-900 ${variant === "poster" ? "aspect-2/3" : "aspect-video"}`}>
+      <div className={`relative overflow-hidden bg-muted ${variant === "poster" ? "aspect-2/3" : "aspect-video"}`}>
         {image && (
           <CustomImage
             src={image}
@@ -181,7 +181,7 @@ const textColor = getTextColor(bgColor);
             aria-hidden="true"
           />
         )}
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/90 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
         {rank && (
           <span
             className="absolute left-0 top-0 px-3 py-2 text-[24px] font-bold"

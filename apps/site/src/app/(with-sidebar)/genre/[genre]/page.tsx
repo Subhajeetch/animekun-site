@@ -2,42 +2,10 @@ import type { Metadata } from "next";
 import AnimeCard from "@/components/AnimeCard";
 import SortDropdown from "./SortDropdown";
 import GenrePagination from "./GenrePagination";
-import axios from "axios";
 import GenreErrorOptions from "./errOptions";
 import { genreMap } from "@/utils/genreMap";
+import { getGenreData } from "./genreApi"
 
-export interface GenreAnimeResult {
-  id: number;
-  idMal: number | null;
-  title: {
-    romaji: string | null;
-    english: string | null;
-    native: string | null;
-    userPreferred: string | null;
-  };
-  description: string | null;
-  coverImage: {
-    extraLarge: string | null;
-    large: string | null;
-    medium: string | null;
-    color: string | null;
-  };
-  genres: string[];
-  averageScore: number | null;
-  popularity: number | null;
-  episodes: number | null;
-  format: string | null;
-}
-
-interface GenreResponse {
-  success: boolean;
-  results: GenreAnimeResult[];
-  currentPage: number;
-  perPage: number;
-  hasNextPage: boolean;
-  totalPages: number;
-  sortBy: string;
-}
 
 function formatGenreName(slug: string): string {
   return slug
@@ -47,31 +15,6 @@ function formatGenreName(slug: string): string {
 }
 
 export const dynamic = 'force-dynamic';
-
-async function getGenreData(
-  genreId: string,
-  page: number,
-  sortBy: string,
-  perPage: number = 24
-): Promise<GenreResponse | null> {
-  try {
-    const apiUrl = process.env.API_URL || "http://localhost:3001";
-    const { data } = await axios.get<GenreResponse>(
-      `${apiUrl}/api/anilist/genre/${genreId}`,
-      {
-        params: {
-          page,
-          "per-page": perPage,
-          "sort-by": sortBy,
-        },
-      }
-    );
-    return data.success ? data : null;
-  } catch (err) {
-    console.error(`[Genre Page SSR Error] Fetch failed for genre: ${genreId}`, err);
-    return null;
-  }
-}
 
 export async function generateMetadata({
   params,

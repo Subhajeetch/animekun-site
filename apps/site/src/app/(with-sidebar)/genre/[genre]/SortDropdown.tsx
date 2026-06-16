@@ -11,11 +11,11 @@ interface SortOption {
 
 const SORT_OPTIONS: SortOption[] = [
   { value: "popularity-desc", label: "Most Popular" },
-  { value: "popularity", label: "Least Popular" },
   { value: "trending-desc", label: "Trending Now" },
+  { value: "favourites-desc", label: "User Favourites" },
   { value: "score-desc", label: "Highest Rated" },
+  { value: "title-english", label: "A-Z" },
   { value: "start-date-desc", label: "Newest Releases" },
-  { value: "start-date", label: "Oldest Classics" },
   { value: "episodes-desc", label: "Most Episodes" },
 ];
 

@@ -143,7 +143,7 @@ function Sidebar({
           aria-label="Close navigation menu"
           className={[
             "w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0",
-            "border border-border text-muted",
+            "border text-border",
             "hover:border-primary hover:text-primary",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary",
             "transition-all duration-200",

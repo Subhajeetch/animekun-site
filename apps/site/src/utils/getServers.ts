@@ -135,16 +135,8 @@ function buildAnilistServers(params: GetServersParams): Server[] {
 
   return [
     {
-      id: 'animeplay.cfd',
-      name: 'Animekun 1',
-      url: `https://animeplay.cfd/stream/ani/${anilistId}/${episodeNumber}/${language}`,
-      isStatic: true,
-      category: 'anilist',
-      normalizer: megacloudNormalizer,
-    },
-    {
       id: 'vidnest.fun',
-      name: 'Animekun 2',
+      name: 'Animekun 1',
       url: `https://vidnest.fun/animepahe/${anilistId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'anilist',
@@ -152,7 +144,7 @@ function buildAnilistServers(params: GetServersParams): Server[] {
     },
     {
       id: 'tryembed.us.cc',
-      name: 'Animekun 3',
+      name: 'Animekun 2',
       url: `https://tryembed.us.cc/embed/anime/${anilistId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'anilist',
@@ -160,7 +152,7 @@ function buildAnilistServers(params: GetServersParams): Server[] {
     },
     {
       id: 'vidnest.fun.anime',
-      name: 'Animekun 4',
+      name: 'Animekun 3',
       url: `https://vidnest.fun/anime/${anilistId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'anilist',
@@ -168,7 +160,7 @@ function buildAnilistServers(params: GetServersParams): Server[] {
     },
     {
       id: 'megaplay.buzz.ani',
-      name: 'Animekun 5',
+      name: 'Animekun 4',
       url: `https://megaplay.buzz/stream/ani/${anilistId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'anilist',
@@ -191,16 +183,8 @@ function buildMalServers(params: GetServersParams): Server[] {
       normalizer: megacloudNormalizer,
     },
     {
-      id: 'animeplay.cfd-mal',
-      name: 'Animekun 2',
-      url: `https://animeplay.cfd/stream/mal/${malId}/${episodeNumber}/${language}`,
-      isStatic: true,
-      category: 'mal',
-      normalizer: megacloudNormalizer,
-    },
-    {
       id: 'megaplay.buzz.mal',
-      name: 'Animekun 3',
+      name: 'Animekun 2',
       url: `https://megaplay.buzz/stream/mal/${malId}/${episodeNumber}/${language}`,
       isStatic: true,
       category: 'mal',

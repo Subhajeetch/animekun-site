@@ -108,7 +108,8 @@ useEffect(() => {
   if (!episodesData?.episodes) return [];
   return Object.values(episodesData.episodes)
     .filter((ep) => {
-      if (ep.type !== 'Regular Episode' || isNaN(Number(ep.episode))) return false;
+      if (ep.type && ep.type !== 'Regular Episode') return false;
+      if (isNaN(Number(ep.episode))) return false;
       if (nextAirEpisode?.episode != null && Number(ep.episode) >= nextAirEpisode.episode) return false;
       return true;
     })

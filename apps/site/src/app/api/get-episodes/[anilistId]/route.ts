@@ -16,7 +16,7 @@ export async function GET(
 
   try {
     const res = await fetch(
-      `https://zenshin-supabase-api-myig.onrender.com/mappings?anilist_id=${anilistId}`,
+      `https://api.ani.zip/mappings?anilist_id=${anilistId}`,
       { next: { revalidate: 3600 } }
     );
 
@@ -31,7 +31,20 @@ export async function GET(
 
     const data: AnimeEpisodesResponse = await res.json();
 
-    return NextResponse.json(data, {
+    // Ani.zip returns episodes as an object keyed by episode number and does
+    // not include the internal `type` field used by the watch page.
+    const episodes = Object.fromEntries(
+      Object.entries(data.episodes ?? {}).map(([key, episode]) => [
+        key,
+        {
+          ...episode,
+          episode: String(episode.episode ?? key),
+          type: episode.type ?? 'Regular Episode',
+        },
+      ])
+    );
+
+    return NextResponse.json({ ...data, episodes }, {
       headers: {
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
       },

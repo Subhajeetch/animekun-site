@@ -1,8 +1,8 @@
 export interface EpisodeData {
   episode: string;
   anidbEid?: string;
-  type: string;
-  length?: string;
+  type?: string;
+  length?: number | string;
   airdate?: string;
   title?: { en?: string; [key: string]: string | undefined };
   nameTvdb?: string;

@@ -1,159 +1,70 @@
-# Turborepo starter
+![Home Page](/assets/images/main-logo/main-animekun-logo.png)
 
-This Turborepo starter is maintained by the Turborepo core team.
+<div align="center">
+    <br />
+    <p>
+        <a href="https://discord.gg/6DhssCN2Ph"><img src="https://img.shields.io/badge/join_our-discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
+        <a href="https://github.com/discordjs/animekun-site/commits/main"><img src="https://img.shields.io/github/last-commit/subhajeetch/animekun-site.svg?logo=github&logoColor=ffffff" alt="Last commit." /></a>
+        <a href="https://graphql.org/">
+          <img src="https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white" alt="graphql" />
+        </a>
+        <a href="https://hono.dev/">
+          <img src="https://img.shields.io/badge/Hono-%23F7B500.svg?logoColor=ffffff" alt="Hono.js" />
+        </a>
+    </p>
+</div>
 
-## Using this example
+> [!IMPORTANT]
+>
+> The content provided by this web app is not owned by me and is not hosted by me. All content belongs to its respective owners. This web app is for educational purposes only and demonstrates how to build web applications using GraphQL, REST APIs & Iframes in a responsible manner.
 
-Run the following command:
+## About
 
-```sh
-npx create-turbo@latest
-```
+An open-source anime streaming website with advanced features, modern UI, and an improved viewing experience compared to existing platforms.
 
-## What's inside?
+<br />
 
-This Turborepo includes the following packages/apps:
+**Demo Video** --> [youtu.be/XOrk2KbWqeM](https://youtu.be/XOrk2KbWqeM)
 
-### Apps and Packages
+![Home Page](assets/images/project-ss/preview-1.png)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+<details>
+  <summary><h1 style="font-size: 30px;">More Screenshots</h1></summary>
+  <br />
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+![Home Page 2](assets/images/project-ss/preview-2.png)
+![navbar](assets/images/project-ss/preview-3.png)
+![Anime info page](assets/images/project-ss/preview-4.png)
+![Anime watch page](assets/images/project-ss/preview-5.png)
+![another video player on watch page](assets/images/project-ss/preview-6.png)
+![Search anime dialog](assets/images/project-ss/preview-7.png)
+![Search results](assets/images/project-ss/preview-8.png)
+![Genre page](assets/images/project-ss/preview-9.png)
+![Comedy genre page](assets/images/project-ss/preview-10.png)
+![Slice of life genre Page](assets/images/project-ss/preview-11.png)
 
-### Utilities
+</details>
 
-This Turborepo has some additional tools already setup for you:
+## Getting Started
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+For installation, local development, environment variables, and deployment instructions, see the [usage guide](docs/USAGE.md).
 
-### Build
+The applications also have their own documentation:
 
-To build all apps and packages, run the following command:
+- [Main Frontend App](apps/site/README.md)
+- [API App](apps/akapi/README.md)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## Contributing
 
-```sh
-cd my-turborepo
-turbo build
-```
+Contributions are welcome. Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) before opening an issue or pull request.
 
-Without global `turbo`, use your package manager:
+## Support
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
+If you like this project, consider giving it a <strong>star 🌟</strong>
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Connect with me on X (Twitter): [@subhajeetch](https://x.com/subhajeetch)<br>
+Join the Discord community: [Animekun](https://discord.gg/6DhssCN2Ph)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## License
 
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+This project is licensed under the [MIT License](LICENSE).
